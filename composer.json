@@ -1,0 +1,23 @@
+{
+    "name": "delia/php-ejercicios",
+    "description": "Ejercicios de práctica PHP",
+    "autoload": {
+        "psr-4": {
+            "Ejercicios\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nabel Hernández",
+            "email": "nabelitahm@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    }
+}
