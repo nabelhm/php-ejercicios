@@ -31,7 +31,16 @@ composer install
 1. **FizzBuzz** - Ciclos, condicionales y funciones básicas
 2. _(más ejercicios por venir)_
 
-## 📚 Recursos
+1. **FizzBuzz**
+Enunciado:
+Crea una función fizzBuzz($n) que imprima los números del 1 al $n, pero:
+
+Si el número es divisible por 3 → imprime "Fizz"
+Si es divisible por 5 → imprime "Buzz"
+Si es divisible por ambos → imprime "FizzBuzz"
+Si no es divisible por ninguno → imprime el número
+
+## Recursos
 
 - [Roadmap PHP](https://roadmap.sh/php)
 - [PHPUnit Documentation](https://phpunit.de/)
