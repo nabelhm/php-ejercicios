@@ -7,77 +7,34 @@ class PasswordValidator
     public function validate(string $password): array
     {
         $errors = [];
-        
-        $lower       = 0;
-        $upper       = 0;
-        $number      = 0;
-        $specialChar = 0;
-        
-        if (8 > strlen($password)) {
-            $errors [] = 'under_8_char';
+
+        if (strlen($password) < 8) {
+            $errors[] = 'under_8_char';
         }
 
-        $array = str_split($password);
-        foreach ($array as $char) {
-            if ((0 === $number) && is_numeric($char)) {
-                $number ++;
-            }
+        $hasLower = false;
+        $hasUpper = false;
+        $hasNumber = false;
+        $hasSpecial = false;
 
-            if ((0 === $lower) && ctype_lower($char)) {
-                $lower ++;
-            }
+        foreach (str_split($password) as $char) {
+            if (!$hasNumber && is_numeric($char)) $hasNumber = true;
+            if (!$hasLower && ctype_lower($char)) $hasLower = true;
+            if (!$hasUpper && ctype_upper($char)) $hasUpper = true;
+            if (!$hasSpecial && ctype_punct($char)) $hasSpecial = true;
 
-            if ((0 === $upper) && ctype_upper($char)) {
-                $upper ++;
-            }
-
-            if ((0 === $specialChar) && ctype_punct($char)) {
-                $specialChar ++;
+            if ($hasNumber && $hasLower && $hasUpper && $hasSpecial) {
+                break;
             }
         }
 
-        if (0 === $number) {
-            $errors [] = 'no_number';
-        }
-        
-        if (0 === $lower) {
-            $errors [] = 'no_lower';
-        }
-        
-        if (0 === $upper) {
-            $errors [] = 'no_upper';
-        }
-
-        if (0 === $specialChar) {
-            $errors [] = 'no_special_char';
-        }
+        if (!$hasNumber) $errors[]  = 'no_number';
+        if (!$hasLower) $errors[]   = 'no_lower';
+        if (!$hasUpper) $errors[]   = 'no_upper';
+        if (!$hasSpecial) $errors[] = 'no_special_char';
 
         return [
-            'valid' => 0 === count($errors),
-            'errors' => $errors
-        ];
-    }   
-    
-    public function validateAlternate(string $password): array
-    {
-        $errors = [];
-
-        if (8 > strlen($password)) {
-            $errors [] = 'under_8_char';
-        }
-
-        $lowerPassword = strtolower($password);
-        if ($lowerPassword === $password) {
-            $errors [] = 'no_upper';
-        }
-
-        $upperPassword = strtoupper($password);
-        if ($upperPassword === $password) {
-            $errors [] = 'no_lower';
-        }
-
-        return [
-            'valid' => 0 === count($errors),
+            'valid' => empty($errors),
             'errors' => $errors
         ];
     }
