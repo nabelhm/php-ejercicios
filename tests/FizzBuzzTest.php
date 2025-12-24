@@ -7,31 +7,35 @@ use Ejercicios\FizzBuzz;
 
 class FizzBuzzTest extends TestCase
 {
+    private FizzBuzz $fizzbuzz; 
+   
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->fizzbuzz = new FizzBuzz();
+    }
+    
     public function testNumeroNormalDevuelveNumero()
     {
-        $fizzbuzz = new FizzBuzz();
-        $this->assertEquals('1', $fizzbuzz->convert(1));
-        $this->assertEquals('2', $fizzbuzz->convert(2));
+        $this->assertEquals('1', $this->fizzbuzz->convert(1));
+        $this->assertEquals('2', $this->fizzbuzz->convert(2));
     }
 
     public function testMultiploDeTresDevuelveFizz()
     {
-        $fizzbuzz = new FizzBuzz();
-        $this->assertEquals('Fizz', $fizzbuzz->convert(3));
-        $this->assertEquals('Fizz', $fizzbuzz->convert(6));
+        $this->assertEquals('Fizz', $this->fizzbuzz->convert(3));
+        $this->assertEquals('Fizz', $this->fizzbuzz->convert(6));
     }
 
     public function testMultiploDeCincoDevuelveBuzz()
     {
-        $fizzbuzz = new FizzBuzz();
-        $this->assertEquals('Buzz', $fizzbuzz->convert(5));
-        $this->assertEquals('Buzz', $fizzbuzz->convert(10));
+        $this->assertEquals('Buzz', $this->fizzbuzz->convert(5));
+        $this->assertEquals('Buzz', $this->fizzbuzz->convert(10));
     }
 
     public function testMultiploDeAmbosDevuelveFizzBuzz()
     {
-        $fizzbuzz = new FizzBuzz();
-        $this->assertEquals('FizzBuzz', $fizzbuzz->convert(15));
-        $this->assertEquals('FizzBuzz', $fizzbuzz->convert(30));
+        $this->assertEquals('FizzBuzz', $this->fizzbuzz->convert(15));
+        $this->assertEquals('FizzBuzz', $this->fizzbuzz->convert(30));
     }
 }
