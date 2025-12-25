@@ -2,7 +2,7 @@
 
 Proyecto de ejercicios para practicar fundamentos de PHP siguiendo el roadmap de [roadmap.sh/php](https://roadmap.sh/php).
 
-## 🎯 Objetivo
+## Objetivo
 
 Practicar conceptos básicos de PHP:
 - Funciones
@@ -10,35 +10,35 @@ Practicar conceptos básicos de PHP:
 - Ciclos
 - TDD con PHPUnit
 
-## 🛠️ Requisitos
+## Requisitos
 
 - PHP 8.2+
 - Composer
 - PHPUnit 11
 
-## 📦 Instalación
+## Instalación
 ```bash
 composer install
 ```
 
-## 🧪 Ejecutar tests
+## Ejecutar tests
 ```bash
 # Todos los tests
 ./vendor/bin/phpunit
 
 # Un test específico
-./vendor/bin/phpunit tests/FizzBuzzTest.php
+./vendor/bin/phpunit tests/NombreDelTest.php
 ```
 
-## 📝 Tabla de Ejercicios
+## Tabla de Ejercicios
 
 | # | Ejercicio | Conceptos | Estado |
 |---|-----------|-----------|--------|
-| 1 | [FizzBuzz](#1-fizzbuzz) | Ciclos, condicionales | ✅ |
-| 2 | [Validador de Contraseñas](#2-validador-de-contraseñas) | Funciones, strings, condicionales | 🔄 |
-| 3 | Calculadora de IMC | Funciones, condicionales | ⏳ |
-| 4 | Contador de Vocales | Ciclos, strings | ⏳ |
-| 5 | Generador de Tabla de Multiplicar | Ciclos anidados, arrays | ⏳ |
+| 1 | [FizzBuzz](#1-fizzbuzz) | Ciclos, condicionales | Completado |
+| 2 | [Validador de Contraseñas](#2-validador-de-contraseñas) | Funciones, strings, condicionales | Completado |
+| 3 | [Calculadora de IMC](#3-calculadora-de-imc) | Funciones, condicionales, aritmética | En progreso |
+| 4 | Contador de Vocales | Ciclos, strings | Pendiente |
+| 5 | Generador de Tabla de Multiplicar | Ciclos anidados, arrays | Pendiente |
 
 ---
 
@@ -64,14 +64,7 @@ Crea una clase `FizzBuzz` con un método `convert($n)` que retorne:
 ### 2. Validador de Contraseñas
 
 **Enunciado:**
-Crea una clase `PasswordValidator` con un método `validate($password)` que retorne `true` si la contraseña cumple:
-- Mínimo 8 caracteres
-- Al menos una letra mayúscula
-- Al menos una letra minúscula
-- Al menos un número
-- Al menos un carácter especial (!@#$%^&*)
-
-El método debe retornar un array con:
+Crea una clase `PasswordValidator` con un método `validate($password)` que retorne un array con:
 ```php
 [
     'valid' => bool,
@@ -79,15 +72,49 @@ El método debe retornar un array con:
 ]
 ```
 
+Requisitos de validación:
+- Mínimo 8 caracteres
+- Al menos una letra mayúscula
+- Al menos una letra minúscula
+- Al menos un número
+- Al menos un carácter especial
+
 **Conceptos practicados:**
 - Validación de strings
-- Expresiones regulares
+- Funciones de caracteres (ctype_*)
 - Arrays
-- Funciones de string (strlen, preg_match)
+- Iteración de strings
 
 ---
 
-## 📚 Recursos
+### 3. Calculadora de IMC
+
+**Enunciado:**
+Crea una clase `BMICalculator` con un método `calculate($weight, $height)` que:
+- Calcule el IMC (peso en kg / altura en metros al cuadrado)
+- Retorne un array con:
+```php
+[
+    'bmi' => float,        // IMC calculado, redondeado a 2 decimales
+    'category' => string   // Categoría según la clasificación
+]
+```
+
+**Clasificación:**
+- BMI < 18.5 → "Bajo peso"
+- 18.5 <= BMI < 25 → "Peso normal"
+- 25 <= BMI < 30 → "Sobrepeso"
+- BMI >= 30 → "Obesidad"
+
+**Conceptos practicados:**
+- Operaciones aritméticas
+- Condicionales con rangos
+- Redondeo de números
+- Validación de entrada
+
+---
+
+## Recursos
 
 - [Roadmap PHP](https://roadmap.sh/php)
 - [PHPUnit Documentation](https://phpunit.de/)
