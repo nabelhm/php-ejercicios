@@ -27,7 +27,7 @@ class BMICalculatorTest extends TestCase
     }
 
     #[DataProvider('bmiProvider')]
-    public function testUnderWeight(float $weight, float $height, float $expectedBmi, string $expectedCategory): void
+    public function testCalculateBMIAndCategory(float $weight, float $height, float $expectedBmi, string $expectedCategory): void
     {
         ['bmi' => $actualBmi, 'category' => $actualCategory] =
             $this->calculator

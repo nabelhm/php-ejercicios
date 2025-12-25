@@ -12,17 +12,17 @@ class BMICalculator
             case $bmi < 18.5:
                 $category = 'under_weight';
                 break;
-            case $bmi >= 18.5 && $bmi < 25:
+            case $bmi < 25:
                 $category = 'normal';
                 break;
-            case $bmi >= 25 && $bmi < 30:
+            case $bmi < 30:
                 $category = 'over_weight';
                 break;
-            case $bmi > 30:
+            case $bmi >= 30:
                 $category = 'obese';
                 break;
             default:
-                break;
+                throw new \InvalidArgumentException('Invalid BMI value');
         };
 
         return [
