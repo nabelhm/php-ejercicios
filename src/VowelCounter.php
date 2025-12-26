@@ -6,51 +6,40 @@ class VowelCounter
 {
     public function count(string $text): array
     {
-        $total  = 0;
-        $aTotal = 0;
-        $eTotal = 0;
-        $iTotal = 0;
-        $oTotal = 0;
-        $uTotal = 0;
+        $vowels = [
+            'a' => ['a', 'á', 'à', 'ä', 'â'],
+            'e' => ['e', 'é', 'è', 'ë', 'ê'],
+            'i' => ['i', 'í', 'ì', 'ï', 'î'],
+            'o' => ['o', 'ó', 'ò', 'ö', 'ô'],
+            'u' => ['u', 'ú', 'ù', 'ü', 'û'],
+        ];
+
+        $counts = [
+            'a' => 0,
+            'e' => 0,
+            'i' => 0,
+            'o' => 0,
+            'u' => 0,
+        ];
 
         $lowerText = mb_strtolower($text, 'UTF-8');
-        $arrayText = mb_str_split($lowerText, 1);
-        foreach ($arrayText as $char) {
-            if (in_array( $char,['a','á'])) {
-                $aTotal ++;
-                $total ++;
-            };
+        $length = mb_strlen($lowerText, 'UTF-8');
 
-            if (in_array( $char,['e','é'])) {
-                $eTotal ++;
-                $total ++;
-            }
+        for ($i = 0; $i < $length; $i++) {
+            $char = mb_substr($lowerText, $i, 1, 'UTF-8');
             
-            if (in_array( $char,['i','í'])) {
-                $iTotal ++;
-                $total ++;
-            }
-
-            if (in_array( $char,['o','ó'])) {
-                $oTotal ++;
-                $total ++;
-            }
-
-            if (in_array( $char,['u','ú'])) {
-                $uTotal ++;
-                $total ++;
+            foreach ($vowels as $vowel => $variants) {
+                if (in_array($char, $variants)) {
+                    $counts[$vowel]++;
+                }
             }
         }
 
+        $total = array_sum($counts);
+
         return [
             'total' => $total,
-            'vowels' => [
-                'a' => $aTotal,
-                'e' => $eTotal,
-                'i' => $iTotal,
-                'o' => $oTotal,
-                'u' => $uTotal,
-            ]
+            'vowels' => $counts
         ];
     }
 }
