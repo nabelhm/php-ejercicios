@@ -36,9 +36,10 @@ composer install
 |---|-----------|-----------|--------|
 | 1 | [FizzBuzz](#1-fizzbuzz) | Ciclos, condicionales | Completado |
 | 2 | [Validador de Contraseñas](#2-validador-de-contraseñas) | Funciones, strings, condicionales | Completado |
-| 3 | [Calculadora de IMC](#3-calculadora-de-imc) | Funciones, condicionales, aritmética | En progreso |
-| 4 | Contador de Vocales | Ciclos, strings | Pendiente |
-| 5 | Generador de Tabla de Multiplicar | Ciclos anidados, arrays | Pendiente |
+| 3 | [Calculadora de IMC](#3-calculadora-de-imc) | Funciones, condicionales, aritmética | Completado |
+| 4 | [Contador de Vocales](#4-contador-de-vocales) | Ciclos, strings, arrays | En progreso |
+| 5 | Analizador de Arrays | Ciclos, arrays, funciones | Pendiente |
+| 6 | Generador de Tabla de Multiplicar | Ciclos anidados, arrays | Pendiente |
 
 ---
 
@@ -111,6 +112,43 @@ Crea una clase `BMICalculator` con un método `calculate($weight, $height)` que:
 - Condicionales con rangos
 - Redondeo de números
 - Validación de entrada
+
+---
+
+### 4. Contador de Vocales
+
+**Enunciado:**
+Crea una clase `VowelCounter` con un método `count($text)` que retorne un array con:
+```php
+[
+    'total' => int,           // Total de vocales encontradas
+    'vowels' => [             // Detalle por vocal
+        'a' => int,
+        'e' => int,
+        'i' => int,
+        'o' => int,
+        'u' => int
+    ]
+]
+```
+
+**Requisitos:**
+- Debe contar vocales tanto mayúsculas como minúsculas
+- Debe ignorar acentos (á, é, í, ó, ú cuentan como a, e, i, o, u)
+- No debe contar caracteres especiales ni números
+- Si no hay vocales, retorna total 0 y todos los contadores en 0
+
+**Ejemplos:**
+- `"Hola Mundo"` → total: 4, a: 1, e: 0, i: 0, o: 2, u: 1
+- `"Programación"` → total: 5, a: 2, e: 0, i: 1, o: 2, u: 0
+- `"123!@#"` → total: 0, todas las vocales en 0
+
+**Conceptos practicados:**
+- Iteración de strings
+- Conversión de caracteres (minúsculas)
+- Arrays asociativos
+- Contadores
+- Normalización de texto
 
 ---
 
