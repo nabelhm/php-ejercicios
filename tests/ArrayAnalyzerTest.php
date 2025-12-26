@@ -9,12 +9,12 @@ use PHPUnit\Framework\TestCase;
 
 class ArrayAnalyzerTest extends TestCase
 {
-    private ArrayAnalyzer $analizer;
+    private ArrayAnalyzer $analyzer;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->analizer = new ArrayAnalyzer();
+        $this->analyzer = new ArrayAnalyzer();
     }
 
     public static function arrayAnalizeProvider(): array
@@ -30,7 +30,7 @@ class ArrayAnalyzerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->analizer->analyze([]);
+        $this->analyzer->analyze([]);
     }
 
     #[DataProvider('arrayAnalizeProvider')]
@@ -51,7 +51,7 @@ class ArrayAnalyzerTest extends TestCase
             'count' => $expectedCount
         ];
 
-        $actualResult = $this->analizer->analyze($numbers);
+        $actualResult = $this->analyzer->analyze($numbers);
 
         $this->assertEquals($expectedResult, $actualResult);
     }
