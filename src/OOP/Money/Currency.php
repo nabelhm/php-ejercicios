@@ -1,11 +1,14 @@
 <?php
-
 namespace Ejercicios\OOP\Money;
 
-enum Currency : string
+enum Currency: string
 {
-    case USD = 'dolar';
-    case EUR = 'euro';
-    case GBP = 'pound sterling';
+    case USD = 'USD';
+    case EUR = 'EUR';
+    case GBP = 'GBP';
+    
+    public static function fromString(string $code): self
+    {
+        return self::from($code);
+    }
 }
-?>

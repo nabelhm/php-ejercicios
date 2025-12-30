@@ -2,60 +2,52 @@
 
 namespace Ejercicios\OOP\Money;
 
-use Exception;
 use InvalidArgumentException;
 
 class Money
 {
     public function __construct(
-        readonly private int $amount, //in cents
-        readonly private Currency $currency)
-    {
+        readonly public int $amount, //in cents
+        readonly public Currency $currency
+    ) {
+        if ($amount < 0) throw new InvalidArgumentException("Amount must be greater than or equal to zero");
     }
 
-    public function getAmount(): int    
+    public function add(self $money): self
     {
-        return $this->amount;
-    }
+        if ($money->currency !== $this->currency) throw new InvalidArgumentException("Invalid currency. Operations must have the same currency");
 
-    public function getCurrency(): Currency    
-    {
-        return $this->currency;
-    }
-
-    public function add(int $amount): self
-    {
         return new Money(
-            $this->amount + $amount,
+            $this->amount + $money->amount,
             $this->currency
         );
     }
 
-    public function subtract(int $amount): self
+    public function subtract(self $money): self
     {
-        if ($amount > $this->amount) throw new InvalidArgumentException("negative_amount");
-        
+        if ($money->currency !== $this->currency) throw new InvalidArgumentException("Invalid currency. Operations must have the same currency");
+        if ($money->amount > $this->amount) throw new InvalidArgumentException("Invalid amount. Subtractor must be less than original");
+
         return new Money(
-            $this->amount - $amount,
+            $this->amount - $money->amount,
             $this->currency
         );
     }
 
-    public function multiply(float $times): self
+    public function multiply(float $times): self 
     {
         return new Money(
-            $this->amount * $times,
+            (int) round($this->amount * $times),
             $this->currency
         );
-    
     }
 
     public function divide(float $times): self
     {
-        if ($times == 0) throw new InvalidArgumentException("division_by_zero");
+        if ($times === 0.0) throw new InvalidArgumentException("Cannot divide by zero");
 
         return new Money(
-            $this->amount / $times,
+            (int) round($this->amount / $times),
             $this->currency
         );
     }
@@ -70,28 +62,44 @@ class Money
 
     public function equals(self $money): bool
     {
-        if ($money->currency !== $this->currency) throw new Exception("invalid_currency");
-        
+        if ($money->currency !== $this->currency) throw new InvalidArgumentException("Invalid currency. Operations must have the same currency");
+
         return (
-            $money->amount === $this->amount 
+            $money->amount === $this->amount
         );
     }
 
     public function greaterThan(self $money): bool
     {
-        if ($money->currency !== $this->currency) throw new Exception("invalid_currency");
-        
+        if ($money->currency !== $this->currency) throw new InvalidArgumentException("Invalid currency. Operations must have the same currency");
+
         return (
-            $this->amount >= $money->amount
+            $this->amount > $money->amount
         );
     }
 
     public function lessThan(self $money): bool
     {
-        if ($money->currency !== $this->currency) throw new Exception("invalid_currency");
-        
+        if ($money->currency !== $this->currency) throw new InvalidArgumentException("Invalid currency. Operations must have the same currency");
+
         return (
-            $this->amount <= $money->amount 
+            $this->amount < $money->amount
+        );
+    }
+
+    public static function fromString(string $moneyText): self
+    {
+        $parts = explode(' ', $moneyText);
+
+        if (count($parts) !== 2) {
+            throw new InvalidArgumentException("Invalid format. Expected: '100.50 EUR'");
+        }
+
+        [$amount, $currency] = $parts;
+
+        return new Money(
+            (int) round((float) $amount * 100),
+            Currency::fromString($currency)
         );
     }
 }

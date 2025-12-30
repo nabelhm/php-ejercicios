@@ -14,79 +14,93 @@ class MoneyTest extends TestCase
 {
     public function testCreateMoney(): void
     {
-        $price = new Money(100 , Currency::EUR);
+        $price = new Money(100, Currency::EUR);
 
         $this->assertInstanceOf('Ejercicios\OOP\Money\Money', $price);
     }
 
     public function testAddMoney(): void
     {
-        $price = new Money(100 , Currency::EUR);
-        $newPrice = $price->add(200);
+        $price1 = new Money(100, Currency::EUR);
+        $price2 = new Money(200, Currency::EUR);
+        $result = $price1->add($price2);
 
-        $this->assertEquals(100, $price->getAmount());
-        $this->assertEquals(Currency::EUR, $price->getCurrency());
-        
-        $this->assertEquals(300, $newPrice->getAmount());
-        $this->assertEquals(Currency::EUR, $newPrice->getCurrency());
+        $this->assertEquals(300, $result->amount);
+        $this->assertEquals(100, $price1->amount); // immutability
+    }
+
+    public function testAddDifferentCurrenciesThrowsException(): void
+    {
+        $eur = new Money(100, Currency::EUR);
+        $usd = new Money(100, Currency::USD);
+
+        $this->expectException(InvalidArgumentException::class);
+        $eur->add($usd);
+    }
+
+    public function testFromString(): void
+    {
+        $money = Money::fromString("100.50 EUR");
+
+        $this->assertEquals(10050, $money->amount); // 100.50 EUR = 10050 cents
+        $this->assertEquals(Currency::EUR, $money->currency);
     }
 
     public function testSubstractMoney(): void
     {
-        $price = new Money(100 , Currency::EUR);
-        $newPrice = $price->subtract(50);
+        $price = new Money(100, Currency::EUR);
+        $price2 = new Money(50, Currency::EUR);
 
-        $this->assertEquals(100, $price->getAmount());
-        $this->assertEquals(Currency::EUR, $price->getCurrency());
-        
-        $this->assertEquals(50, $newPrice->getAmount());
-        $this->assertEquals(Currency::EUR, $newPrice->getCurrency());
+        $result = $price->subtract($price2);
+
+        $this->assertEquals(100, $price->amount);
+        $this->assertEquals(50, $result->amount);
     }
 
     public function testSubstractMoneyException(): void
     {
-        $price = new Money(100 , Currency::EUR);
-        
+        $price = new Money(100, Currency::EUR);
+        $price2 = new Money(150, Currency::EUR);
+
         $this->expectException(InvalidArgumentException::class);
-        $price->subtract(300);
+        $price->subtract($price2);
     }
 
     public function testMutiplyMoney(): void
     {
-        $price = new Money(100 , Currency::EUR);
-        $newPrice = $price->multiply(1.5);
+        $price = new Money(100, Currency::EUR);
+        $newPrice = $price->multiply(2);
 
-        $this->assertEquals(100, $price->getAmount());
-        $this->assertEquals(Currency::EUR, $price->getCurrency());
-        
-        $this->assertEquals(150, $newPrice->getAmount());
-        $this->assertEquals(Currency::EUR, $newPrice->getCurrency());
+        $this->assertEquals(100, $price->amount);
+
+        $this->assertEquals(200, $newPrice->amount);
+        $this->assertEquals(Currency::EUR, $newPrice->currency);
     }
 
     public function testDivideMoney(): void
     {
-        $price = new Money(100 , Currency::EUR);
+        $price = new Money(100, Currency::EUR);
         $newPrice = $price->divide(2);
 
-        $this->assertEquals(100, $price->getAmount());
-        $this->assertEquals(Currency::EUR, $price->getCurrency());
-        
-        $this->assertEquals(50, $newPrice->getAmount());
-        $this->assertEquals(Currency::EUR, $newPrice->getCurrency());
+        $this->assertEquals(100, $price->amount);
+        $this->assertEquals(Currency::EUR, $price->currency);
+
+        $this->assertEquals(50, $newPrice->amount);
+        $this->assertEquals(Currency::EUR, $newPrice->currency);
     }
 
     public function testDivideMoneyException(): void
     {
-        $price = new Money(100 , Currency::EUR);
-        
+        $price = new Money(100, Currency::EUR);
+
         $this->expectException(InvalidArgumentException::class);
         $price->divide(0);
     }
 
     public function testMoneyToString(): void
     {
-        $price = new Money(100 , Currency::EUR);
-        
+        $price = new Money(100, Currency::EUR);
+
         $this->assertEquals('1.00 EUR', $price->__toString());
     }
 
@@ -111,7 +125,7 @@ class MoneyTest extends TestCase
         $price = new Money(100, Currency::EUR);
         $newPrice = new Money(100, Currency::USD);
 
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidArgumentException::class);
         $price->equals($newPrice);
     }
 
@@ -136,7 +150,7 @@ class MoneyTest extends TestCase
         $price = new Money(100, Currency::EUR);
         $newPrice = new Money(100, Currency::USD);
 
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidArgumentException::class);
         $price->greaterThan($newPrice);
     }
 
@@ -161,7 +175,19 @@ class MoneyTest extends TestCase
         $price = new Money(100, Currency::EUR);
         $newPrice = new Money(100, Currency::USD);
 
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidArgumentException::class);
         $price->lessThan($newPrice);
+    }
+
+    public function testNegativeAmountThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new Money(-100, Currency::EUR);
+    }
+
+    public function testFromStringInvalidFormat(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Money::fromString("invalid");
     }
 }
