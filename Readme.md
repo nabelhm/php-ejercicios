@@ -4,17 +4,17 @@ Proyecto de ejercicios para practicar fundamentos de PHP siguiendo el roadmap de
 
 ## Objetivo
 
-Practicar conceptos básicos de PHP:
-- Funciones
-- Condicionales
-- Ciclos
-- TDD con PHPUnit
+Practicar conceptos de PHP desde fundamentos hasta arquitectura avanzada:
+- Fundamentos (completado): Funciones, condicionales, ciclos
+- OOP (en progreso): Interfaces, traits, abstract classes, SOLID, dependency injection
+- Arquitectura avanzada (próximamente): DDD, Hexagonal, CQRS en Symfony
 
 ## Requisitos
 
 - PHP 8.2+
 - Composer
 - PHPUnit 11
+- Xdebug (opcional, para coverage)
 
 ## Instalación
 ```bash
@@ -28,9 +28,14 @@ composer install
 
 # Un test específico
 ./vendor/bin/phpunit tests/NombreDelTest.php
+
+# Con coverage
+./vendor/bin/phpunit --coverage-html coverage
 ```
 
 ## Tabla de Ejercicios
+
+### Fundamentos
 
 | # | Ejercicio | Conceptos | Estado |
 |---|-----------|-----------|--------|
@@ -38,11 +43,22 @@ composer install
 | 2 | [Validador de Contraseñas](#2-validador-de-contraseñas) | Funciones, strings, condicionales | Completado |
 | 3 | [Calculadora de IMC](#3-calculadora-de-imc) | Funciones, condicionales, aritmética | Completado |
 | 4 | [Contador de Vocales](#4-contador-de-vocales) | Ciclos, strings, arrays | Completado |
-| 5 | [Analizador de Arrays](#5-analizador-de-arrays) | Ciclos, arrays, funciones | En progreso |
+| 5 | [Analizador de Arrays](#5-analizador-de-arrays) | Ciclos, arrays, funciones | Completado |
+
+### Programación Orientada a Objetos
+
+| # | Ejercicio | Conceptos | Estado |
+|---|-----------|-----------|--------|
+| 6 | [Money Value Object](#6-money-value-object) | Value Objects, Enums, Readonly properties, Immutability | Pendiente |
+| 7 | [State Machine con Enums](#7-state-machine-con-enums) | Enums, Immutability, Exceptions | Pendiente |
+| 8 | [Event Dispatcher](#8-event-dispatcher) | Interfaces, Dependency Injection, Observer Pattern | Pendiente |
+| 9 | [Validation Pipeline](#9-validation-pipeline) | Traits, Fluent Interface, Decorator Pattern | Pendiente |
+| 10 | [Repository Pattern con Caching](#10-repository-pattern-con-caching) | Abstract Classes, Traits, Attributes, Decorator Pattern | Pendiente |
+| 11 | [Logger con Decorators](#11-logger-con-decorators) | Interfaces, Enums, Namespaces, Decorator Pattern | Pendiente |
 
 ---
 
-## Ejercicios
+## Ejercicios de Fundamentos
 
 ### 1. FizzBuzz
 
@@ -182,6 +198,249 @@ Crea una clase `ArrayAnalyzer` con un método `analyze($numbers)` que reciba un 
 - Funciones agregadas (sum, average, min, max)
 - Manejo de excepciones
 - Operaciones con arrays vacíos
+
+---
+
+---
+
+## Ejercicios de Programación Orientada a Objetos
+
+### 6. Money Value Object
+
+**Enunciado:**
+Implementa un Value Object inmutable para manejar dinero con diferentes monedas.
+
+**Requisitos:**
+- Readonly properties con constructor promotion (PHP 8.1+)
+- Backed Enum `Currency` con valores: USD, EUR, GBP
+- Métodos inmutables que retornan nueva instancia: `add()`, `subtract()`, `multiply()`, `divide()`
+- Magic method `__toString()` con formato: "100.50 EUR"
+- Validación: no permitir operaciones entre diferentes monedas (lanzar exception)
+- Método estático `fromString("100.50 EUR")` para parsear strings
+- Métodos de comparación: `equals()`, `greaterThan()`, `lessThan()`
+
+**Reglas de negocio:**
+- Amount debe ser siempre >= 0
+- Operaciones retornan nueva instancia (immutability)
+- División por cero lanza exception
+- Comparaciones solo entre misma moneda
+
+**Namespace:** `Ejercicios\OOP\Money`
+
+**Conceptos practicados:**
+- Value Objects
+- Backed Enums (PHP 8.1)
+- Readonly properties
+- Constructor promotion
+- Immutability
+- Static factory methods
+- Magic methods
+- Exception handling
+
+---
+
+### 7. State Machine con Enums
+
+**Enunciado:**
+Implementa una máquina de estados para un pedido (Order) que transiciona entre estados: Pending → Confirmed → Shipped → Delivered.
+
+**Requisitos:**
+- Backed Enum `OrderStatus` (string backed) con valores: PENDING, CONFIRMED, SHIPPED, DELIVERED
+- Método en enum: `canTransitionTo(OrderStatus $status): bool` usando match expression
+- Class `Order` con readonly property `OrderStatus $status`
+- Métodos inmutables que retornan nueva instancia: `confirm()`, `ship()`, `deliver()`
+- Método `cancel()` que solo funciona desde PENDING o CONFIRMED
+- Exception personalizada `InvalidStateTransitionException`
+- Readonly property `id` (string UUID o similar)
+- Readonly property `createdAt` (DateTimeImmutable)
+
+**Transiciones válidas:**
+- PENDING → CONFIRMED, CANCELLED
+- CONFIRMED → SHIPPED, CANCELLED
+- SHIPPED → DELIVERED
+- DELIVERED → (estado final, no transiciona)
+- CANCELLED → (estado final, no transiciona)
+
+**Namespace:** `Ejercicios\OOP\Order`
+
+**Conceptos practicados:**
+- Backed Enums
+- Enum methods
+- Match expressions
+- Immutability
+- Custom exceptions
+- State pattern
+- Value Objects (Order como entidad inmutable)
+
+---
+
+### 8. Event Dispatcher
+
+**Enunciado:**
+Implementa un sistema de eventos con múltiples listeners usando Observer pattern.
+
+**Requisitos:**
+- Interface `EventInterface` con método `getName(): string`
+- Interface `ListenerInterface` con método `handle(EventInterface $event): void`
+- Class `EventDispatcher` que almacena listeners por evento
+- Método `subscribe(string $eventName, ListenerInterface $listener): void`
+- Método `dispatch(EventInterface $event): void` ejecuta todos los listeners del evento
+- Listeners se ejecutan en el orden en que fueron suscritos
+- Un evento puede tener múltiples listeners
+- Type hints estrictos con `declare(strict_types=1)`
+
+**Ejemplo de uso:**
+```php
+$dispatcher = new EventDispatcher();
+$dispatcher->subscribe('user.created', new EmailListener());
+$dispatcher->subscribe('user.created', new LogListener());
+$dispatcher->dispatch(new UserCreatedEvent($user));
+```
+
+**Namespace:** 
+- `Ejercicios\OOP\Events\EventInterface`
+- `Ejercicios\OOP\Events\Listener\ListenerInterface`
+- `Ejercicios\OOP\Events\EventDispatcher`
+
+**Conceptos practicados:**
+- Interfaces
+- Observer pattern
+- Dependency injection
+- Type declarations
+- Namespaces
+- SOLID (Single Responsibility, Open/Closed)
+
+---
+
+### 9. Validation Pipeline
+
+**Enunciado:**
+Implementa un sistema de validación componible con fluent interface.
+
+**Requisitos:**
+- Interface `ValidatorInterface` con método `validate(mixed $value): bool` y `getError(): string`
+- Trait `ValidatorChain` para encadenar validaciones
+- Validators concretos: 
+  - `EmailValidator`: valida formato email
+  - `LengthValidator`: valida longitud min/max
+  - `RegexValidator`: valida contra regex personalizado
+- Class `ValidationPipeline` que usa el trait
+- Fluent interface: `$pipeline->add($validator)->add($validator)->validate($data)`
+- Class `ValidationResult` con métodos `isValid(): bool` y `getErrors(): array`
+- El pipeline debe detenerse en el primer error o validar todos (configurable)
+
+**Ejemplo de uso:**
+```php
+$pipeline = new ValidationPipeline();
+$result = $pipeline
+    ->add(new LengthValidator(min: 8))
+    ->add(new EmailValidator())
+    ->validate('test@example.com');
+
+if (!$result->isValid()) {
+    var_dump($result->getErrors());
+}
+```
+
+**Namespace:** `Ejercicios\OOP\Validation`
+
+**Conceptos practicados:**
+- Interfaces
+- Traits
+- Fluent interface (method chaining)
+- Named parameters (PHP 8.0)
+- Composite pattern
+- Strategy pattern
+
+---
+
+### 10. Repository Pattern con Caching
+
+**Enunciado:**
+Implementa el patrón Repository con una implementación en memoria y un decorador de caché.
+
+**Requisitos:**
+- Interface `RepositoryInterface` con métodos:
+  - `find(string $id): ?object`
+  - `save(object $entity): void`
+  - `delete(string $id): void`
+  - `findAll(): array`
+- Abstract class `AbstractRepository` con lógica común (generación de IDs, etc.)
+- Concrete class `InMemoryRepository` que extiende AbstractRepository (almacena en array)
+- Trait `Timestampable` con properties `createdAt` y `updatedAt` (DateTimeImmutable)
+- Class `CachedRepository` que implementa `RepositoryInterface` y decora cualquier repository
+- Custom attribute `#[Entity]` para marcar clases persistibles
+- Constructor promotion + readonly donde sea apropiado
+
+**Ejemplo de uso:**
+```php
+$baseRepo = new InMemoryRepository();
+$cachedRepo = new CachedRepository($baseRepo, ttl: 60);
+
+$cachedRepo->save($user); // Guarda en repo base y cachea
+$user = $cachedRepo->find($id); // Primera vez: lee de repo base, cachea
+$user = $cachedRepo->find($id); // Segunda vez: lee de caché
+```
+
+**Namespace:** `Ejercicios\OOP\Repository`
+
+**Conceptos practicados:**
+- Interfaces
+- Abstract classes
+- Traits
+- Decorator pattern
+- Dependency injection
+- Attributes (PHP 8.0)
+- Constructor promotion
+- Repository pattern
+
+---
+
+### 11. Logger con Decorators
+
+**Enunciado:**
+Implementa un sistema de logging con múltiples handlers y decoradores (inspirado en PSR-3 simplificado).
+
+**Requisitos:**
+- Interface `LoggerInterface` con métodos:
+  - `log(LogLevel $level, string $message, array $context = []): void`
+  - Métodos de conveniencia: `debug()`, `info()`, `warning()`, `error()`
+- Backed Enum `LogLevel` con valores: DEBUG, INFO, WARNING, ERROR
+- Método estático en enum: `LogLevel::fromString(string $level): self`
+- Implementations concretas:
+  - `FileLogger`: escribe a archivo
+  - `ConsoleLogger`: escribe a STDOUT
+  - `NullLogger`: no hace nada (útil para tests)
+- Decorators:
+  - `TimestampedLogger`: añade timestamp a cada mensaje
+  - `FilteredLogger`: solo loguea niveles >= nivel mínimo configurado
+- Cada logger puede decorar otro (composition)
+- Constructor injection de dependencias
+
+**Ejemplo de uso:**
+```php
+$baseLogger = new FileLogger('/tmp/app.log');
+$timestamped = new TimestampedLogger($baseLogger);
+$filtered = new FilteredLogger($timestamped, minLevel: LogLevel::WARNING);
+
+$filtered->debug('This will not be logged');
+$filtered->error('This will be logged with timestamp');
+```
+
+**Namespace:** 
+- `Ejercicios\OOP\Logger\LoggerInterface`
+- `Ejercicios\OOP\Logger\LogLevel`
+- `Ejercicios\OOP\Logger\Handler\*` (FileLogger, ConsoleLogger, NullLogger)
+- `Ejercicios\OOP\Logger\Decorator\*` (TimestampedLogger, FilteredLogger)
+
+**Conceptos practicados:**
+- Interfaces
+- Backed Enums
+- Static factory methods
+- Decorator pattern
+- Dependency injection
+- Namespaces organizados
+- Composition over inheritance
 
 ---
 
