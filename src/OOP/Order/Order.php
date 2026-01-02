@@ -21,55 +21,38 @@ class Order
         );
     }
     
-    public function confirm(): self
+    private function transitionTo(OrderStatus $newStatus): self
     {
-        if (!$this->status->canTransitionTo(OrderStatus::CONFIRMED)) {
-            throw new InvalidStateTransitionException("Status must be Pending");
-        };
-          
+        if (!$this->status->canTransitionTo($newStatus)) {
+            throw new InvalidStateTransitionException(
+                "Cannot transition from {$this->status->value} to {$newStatus->value}"
+            );
+        }
+        
         return new Order(
             id: $this->id,
-            status: OrderStatus::CONFIRMED,
+            status: $newStatus,
             createdAt: $this->createdAt
         );
+    }
+
+    public function confirm(): self
+    {
+        return $this->transitionTo(OrderStatus::CONFIRMED);
     }
 
     public function ship(): self
     {
-        if (!$this->status->canTransitionTo(OrderStatus::SHIPPED)) {
-            throw new InvalidStateTransitionException("Status must be Confirmed");
-        };
-          
-        return new Order(
-            id: $this->id,
-            status: OrderStatus::SHIPPED,
-            createdAt: $this->createdAt
-        );
+        return $this->transitionTo(OrderStatus::SHIPPED);
     }
 
     public function deliver(): self
     {
-        if (!$this->status->canTransitionTo(OrderStatus::DELIVERED)) {
-            throw new InvalidStateTransitionException("Status must be Shipped");
-        };
-          
-        return new Order(
-            id: $this->id,
-            status: OrderStatus::DELIVERED,
-            createdAt: $this->createdAt
-        );
+        return $this->transitionTo(OrderStatus::DELIVERED);
     }
 
     public function cancel(): self
     {
-        if (!$this->status->canTransitionTo(OrderStatus::CANCELLED)) {
-            throw new InvalidStateTransitionException("Status must be Pending or Confirmed");
-        };
-          
-        return new Order(
-            id: $this->id,
-            status: OrderStatus::CANCELLED,
-            createdAt: $this->createdAt
-        );
+        return $this->transitionTo(OrderStatus::CANCELLED);
     }
 }

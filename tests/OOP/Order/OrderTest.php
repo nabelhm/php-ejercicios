@@ -124,7 +124,7 @@ class OrderTest extends TestCase
 
     // Immutability
     public function testConfirmReturnsNewInstance(): void
-    { 
+    {
         $order = Order::create(OrderStatus::PENDING);
         $confirmedOrder = $order->confirm();
 
@@ -146,12 +146,22 @@ class OrderTest extends TestCase
         $this->assertTrue(OrderStatus::PENDING->canTransitionTo(OrderStatus::CONFIRMED));
     }
 
-    public function testCannotTransitionFromDeliveredToAnything(): void
+    /**
+     * @dataProvider deliveredTransitionsProvider
+     */
+    public function testCannotTransitionFromDeliveredToAnything(OrderStatus $targetStatus): void
     {
-        $this->assertFalse(OrderStatus::DELIVERED->canTransitionTo(OrderStatus::PENDING));
-        $this->assertFalse(OrderStatus::DELIVERED->canTransitionTo(OrderStatus::CONFIRMED));
-        $this->assertFalse(OrderStatus::DELIVERED->canTransitionTo(OrderStatus::SHIPPED));
-        $this->assertFalse(OrderStatus::DELIVERED->canTransitionTo(OrderStatus::DELIVERED));
-        $this->assertFalse(OrderStatus::DELIVERED->canTransitionTo(OrderStatus::CANCELLED));
+        $this->assertFalse(OrderStatus::DELIVERED->canTransitionTo($targetStatus));
+    }
+
+    public static function deliveredTransitionsProvider(): array
+    {
+        return [
+            'to PENDING' => [OrderStatus::PENDING],
+            'to CONFIRMED' => [OrderStatus::CONFIRMED],
+            'to SHIPPED' => [OrderStatus::SHIPPED],
+            'to DELIVERED' => [OrderStatus::DELIVERED],
+            'to CANCELLED' => [OrderStatus::CANCELLED],
+        ];
     }
 }
