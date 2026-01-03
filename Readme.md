@@ -50,8 +50,8 @@ composer install
 | # | Ejercicio | Conceptos | Estado |
 |---|-----------|-----------|--------|
 | 6 | [Money Value Object](#6-money-value-object) | Value Objects, Enums, Readonly properties, Immutability | Completado |
-| 7 | [State Machine con Enums](#7-state-machine-con-enums) | Enums, Immutability, Exceptions | En progreso |
-| 8 | [Event Dispatcher](#8-event-dispatcher) | Interfaces, Dependency Injection, Observer Pattern | Pendiente |
+| 7 | [State Machine con Enums](#7-state-machine-con-enums) | Enums, Immutability, Exceptions | Completado |
+| 8 | [Event Dispatcher](#8-event-dispatcher) | Interfaces, Dependency Injection, Observer Pattern | En progreso |
 | 9 | [Validation Pipeline](#9-validation-pipeline) | Traits, Fluent Interface, Decorator Pattern | Pendiente |
 | 10 | [Repository Pattern con Caching](#10-repository-pattern-con-caching) | Abstract Classes, Traits, Attributes, Decorator Pattern | Pendiente |
 | 11 | [Logger con Decorators](#11-logger-con-decorators) | Interfaces, Enums, Namespaces, Decorator Pattern | Pendiente |
@@ -291,10 +291,10 @@ Implementa un sistema de eventos con múltiples listeners usando Observer patter
 
 **Ejemplo de uso:**
 ```php
-$dispatcher = new EventDispatcher();
-$dispatcher->subscribe('user.created', new EmailListener());
-$dispatcher->subscribe('user.created', new LogListener());
-$dispatcher->dispatch(new UserCreatedEvent($user));
+  $dispatcher = new EventDispatcher();
+  $dispatcher->subscribe('user.created', new EmailListener());
+  $dispatcher->subscribe('user.created', new LogListener());
+  $dispatcher->dispatch(new UserCreatedEvent($user));
 ```
 
 **Namespace:** 
