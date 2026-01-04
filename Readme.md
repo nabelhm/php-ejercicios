@@ -51,8 +51,8 @@ composer install
 |---|-----------|-----------|--------|
 | 6 | [Money Value Object](#6-money-value-object) | Value Objects, Enums, Readonly properties, Immutability | Completado |
 | 7 | [State Machine con Enums](#7-state-machine-con-enums) | Enums, Immutability, Exceptions | Completado |
-| 8 | [Event Dispatcher](#8-event-dispatcher) | Interfaces, Dependency Injection, Observer Pattern | En progreso |
-| 9 | [Validation Pipeline](#9-validation-pipeline) | Traits, Fluent Interface, Decorator Pattern | Pendiente |
+| 8 | [Event Dispatcher](#8-event-dispatcher) | Interfaces, Dependency Injection, Observer Pattern | Completado |
+| 9 | [Validation Pipeline](#9-validation-pipeline) | Traits, Fluent Interface, Decorator Pattern | Completado |
 | 10 | [Repository Pattern con Caching](#10-repository-pattern-con-caching) | Abstract Classes, Traits, Attributes, Decorator Pattern | Pendiente |
 | 11 | [Logger con Decorators](#11-logger-con-decorators) | Interfaces, Enums, Namespaces, Decorator Pattern | Pendiente |
 
@@ -331,15 +331,15 @@ Implementa un sistema de validación componible con fluent interface.
 
 **Ejemplo de uso:**
 ```php
-$pipeline = new ValidationPipeline();
-$result = $pipeline
-    ->add(new LengthValidator(min: 8))
-    ->add(new EmailValidator())
-    ->validate('test@example.com');
+  $pipeline = new ValidationPipeline();
+  $result = $pipeline
+      ->add(new LengthValidator(min: 8))
+      ->add(new EmailValidator())
+      ->validate('test@example.com');
 
-if (!$result->isValid()) {
-    var_dump($result->getErrors());
-}
+  if (!$result->isValid()) {
+      var_dump($result->getErrors());
+  }
 ```
 
 **Namespace:** `Ejercicios\OOP\Validation`
