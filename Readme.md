@@ -172,13 +172,13 @@ Crea una clase `VowelCounter` con un método `count($text)` que retorne un array
 **Enunciado:**
 Crea una clase `ArrayAnalyzer` con un método `analyze($numbers)` que reciba un array de números y retorne un array con estadísticas:
 ```php
-[
-    'sum' => float,        // Suma de todos los números
-    'average' => float,    // Promedio (redondeado a 2 decimales)
-    'min' => float,        // Valor mínimo
-    'max' => float,        // Valor máximo
-    'count' => int         // Cantidad de elementos
-]
+  [
+      'sum' => float,        // Suma de todos los números
+      'average' => float,    // Promedio (redondeado a 2 decimales)
+      'min' => float,        // Valor mínimo
+      'max' => float,        // Valor máximo
+      'count' => int         // Cantidad de elementos
+  ]
 ```
 
 **Requisitos:**
@@ -374,12 +374,12 @@ Implementa el patrón Repository con una implementación en memoria y un decorad
 
 **Ejemplo de uso:**
 ```php
-$baseRepo = new InMemoryRepository();
-$cachedRepo = new CachedRepository($baseRepo, ttl: 60);
+  $baseRepo = new InMemoryRepository();
+  $cachedRepo = new CachedRepository($baseRepo, ttl: 60);
 
-$cachedRepo->save($user); // Guarda en repo base y cachea
-$user = $cachedRepo->find($id); // Primera vez: lee de repo base, cachea
-$user = $cachedRepo->find($id); // Segunda vez: lee de caché
+  $cachedRepo->save($user); // Guarda en repo base y cachea
+  $user = $cachedRepo->find($id); // Primera vez: lee de repo base, cachea
+  $user = $cachedRepo->find($id); // Segunda vez: lee de caché
 ```
 
 **Namespace:** `Ejercicios\OOP\Repository`
@@ -419,12 +419,12 @@ Implementa un sistema de logging con múltiples handlers y decoradores (inspirad
 
 **Ejemplo de uso:**
 ```php
-$baseLogger = new FileLogger('/tmp/app.log');
-$timestamped = new TimestampedLogger($baseLogger);
-$filtered = new FilteredLogger($timestamped, minLevel: LogLevel::WARNING);
+  $baseLogger = new FileLogger('/tmp/app.log');
+  $timestamped = new TimestampedLogger($baseLogger);
+  $filtered = new FilteredLogger($timestamped, minLevel: LogLevel::WARNING);
 
-$filtered->debug('This will not be logged');
-$filtered->error('This will be logged with timestamp');
+  $filtered->debug('This will not be logged');
+  $filtered->error('This will be logged with timestamp');
 ```
 
 **Namespace:** 
