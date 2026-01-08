@@ -53,8 +53,8 @@ composer install
 | 7 | [State Machine con Enums](#7-state-machine-con-enums) | Enums, Immutability, Exceptions | Completado |
 | 8 | [Event Dispatcher](#8-event-dispatcher) | Interfaces, Dependency Injection, Observer Pattern | Completado |
 | 9 | [Validation Pipeline](#9-validation-pipeline) | Traits, Fluent Interface, Decorator Pattern | Completado |
-| 10 | [Repository Pattern con Caching](#10-repository-pattern-con-caching) | Abstract Classes, Traits, Attributes, Decorator Pattern | Pendiente |
-| 11 | [Logger con Decorators](#11-logger-con-decorators) | Interfaces, Enums, Namespaces, Decorator Pattern | Pendiente |
+| 10 | [Repository Pattern con Caching](#10-repository-pattern-con-caching) | Abstract Classes, Traits, Attributes, Decorator Pattern | Completado |
+| 11 | [Logger con Decorators](#11-logger-con-decorators) | Interfaces, Enums, Namespaces, Decorator Pattern | En Progreso |
 
 ---
 

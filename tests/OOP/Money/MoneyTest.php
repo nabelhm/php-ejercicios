@@ -8,8 +8,6 @@ use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-use function PHPUnit\Framework\equalTo;
-
 class MoneyTest extends TestCase
 {
     public function testCreateMoney(): void
