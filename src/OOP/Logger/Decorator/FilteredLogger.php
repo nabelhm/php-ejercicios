@@ -1,49 +1,45 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Ejercicios\OOP\Logger\Decorator;
 
 use Ejercicios\OOP\Logger\LoggerInterface;
 use Ejercicios\OOP\Logger\LogLevel;
-use Exception;
 
-class FilteredLogger implements LoggerInterface
+final readonly class FilteredLogger implements LoggerInterface
 {
-    private int $minLevelWeight;
-    
     public function __construct(
-        private LoggerInterface $logger,
-        private LogLevel $minLevel = LogLevel::DEBUG
-    ) {
-        $this->minLevelWeight = $minLevel->getWeight();
-    }
+        private readonly LoggerInterface $logger,
+        private readonly LogLevel $minLevel = LogLevel::DEBUG
+    ) {}
 
-    public function log(LogLevel $level, string $message, array $context = []): void {
-        if (!$this->checkLevelWeight($level)) {
+    public function log(LogLevel $level, string $message, array $context = []): void
+    {
+        if ($level->getWeight() < $this->minLevel->getWeight()) {
             return;
         }
 
         $this->logger->log($level, $message, $context);
     }
 
-    public function debug(string $message, array $context = []): void{
+    public function debug(string $message, array $context = []): void
+    {
         $this->log(LogLevel::DEBUG, $message, $context);
     }
 
-    public function info(string $message, array $context = []): void{
+    public function info(string $message, array $context = []): void
+    {
         $this->log(LogLevel::INFO, $message, $context);
     }
 
-    public function warning(string $message, array $context = []): void{
+    public function warning(string $message, array $context = []): void
+    {
         $this->log(LogLevel::WARNING, $message, $context);
     }
 
-    public function error(string $message, array $context = []): void{
-        $this->log(LogLevel::ERROR, $message, $context);
-    }
-
-    private function checkLevelWeight(LogLevel $level): bool
+    public function error(string $message, array $context = []): void
     {
-        return ($level->getWeight() >= $this->minLevelWeight);
+        $this->log(LogLevel::ERROR, $message, $context);
     }
 }

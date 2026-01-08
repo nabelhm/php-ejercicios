@@ -13,18 +13,22 @@ enum LogLevel: string
     case WARNING = 'WARNING';
     case ERROR = 'ERROR';
 
-    public static function fromString(string $level): self {
-        foreach (LogLevel::cases() as $case) {
-            if ($case->value === $level) {
-                return $case;
-            }
-        }
-        throw new InvalidArgumentException("$level do not corresponds to LogLevel case");
+    public static function fromString(string $level): self
+    {
+        $normalized = strtoupper($level);
+
+        return match ($normalized) {
+            'DEBUG' => self::DEBUG,
+            'INFO' => self::INFO,
+            'WARNING' => self::WARNING,
+            'ERROR' => self::ERROR,
+            default => throw new InvalidArgumentException("Invalid log level: $level"),
+        };
     }
 
     public function getWeight(): int
     {
-        return match($this) {
+        return match ($this) {
             self::DEBUG => 1,
             self::INFO => 2,
             self::WARNING => 3,

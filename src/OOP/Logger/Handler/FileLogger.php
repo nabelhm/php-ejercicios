@@ -13,15 +13,14 @@ class FileLogger implements LoggerInterface
 
     public function log(LogLevel $level, string $message, array $context = []): void
     {
-        if (!is_dir($this->filepath)) {
-            mkdir($this->filepath, 0777, true);
+        $directory = dirname($this->filepath);
+
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
         }
 
-        $file = $this->filepath . '/logs.txt';
-
-
-        $log = "[$level->value] $message ";
-        file_put_contents($file, $log . PHP_EOL, FILE_APPEND);
+        $log = "[{$level->value}] $message";
+        file_put_contents($this->filepath, $log . PHP_EOL, FILE_APPEND);
     }
 
     public function debug(string $message, array $context = []): void

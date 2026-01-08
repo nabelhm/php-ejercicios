@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\OOP\Logger;
@@ -12,6 +13,29 @@ use PHPUnit\Framework\TestCase;
 
 class LoggerDecoratedIntegrationTest extends TestCase
 {
+
+    private string $logDir;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->logDir = sys_get_temp_dir() . '/test_integration_' . uniqid();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $logFile = $this->logDir . '/logs.txt';
+        if (file_exists($logFile)) {
+            unlink($logFile);
+        }
+
+        if (is_dir($this->logDir)) {
+            rmdir($this->logDir);
+        }
+    }
+
     public function testConsoleLoggerSeveralDecorators(): void
     {
         $baseLogger = new ConsoleLogger();
@@ -28,13 +52,11 @@ class LoggerDecoratedIntegrationTest extends TestCase
         $this->assertStringContainsString('This is a warning log', $output);
         $this->assertMatchesRegularExpression('/^\[WARNING\] \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\] This is a warning log\n$/', $output);
         $this->assertStringNotContainsString("[DEBUG] This is a debug log", $output);
-
     }
 
-    public function tesFileLoggerSeveralDecorators(): void
+    public function testFileLoggerSeveralDecorators(): void
     {
-
-        $baseLogger = new FileLogger('logs');
+        $baseLogger = new FileLogger($this->logDir . '/logs.txt');
 
         $timestamped = new TimestampedLogger($baseLogger);
         $filtered = new FilteredLogger($timestamped, minLevel: LogLevel::WARNING);
@@ -42,10 +64,12 @@ class LoggerDecoratedIntegrationTest extends TestCase
         $filtered->debug('This is a debug log');
         $filtered->warning('This is a warning log');
 
-        $fileLogs = file_get_contents("logs/logs.txt");
-        $this->assertStringContainsString("[WARNING] This is a warning log", $fileLogs);
-        $this->assertMatchesRegularExpression('/^\[WARNING\] \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\] This is a warning log\n$/', $fileLogs);
-
-        $this->assertStringNotContainsString("[DEBUG] This is a debug log", $fileLogs);
+        $fileLogs = file_get_contents($this->logDir . '/logs.txt');
+        $this->assertStringContainsString("[WARNING]", $fileLogs);
+        $this->assertMatchesRegularExpression(
+            '/^\[WARNING\] \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\] This is a warning log\n$/',
+            $fileLogs
+        );
+        $this->assertStringNotContainsString("[DEBUG]", $fileLogs);
     }
 }

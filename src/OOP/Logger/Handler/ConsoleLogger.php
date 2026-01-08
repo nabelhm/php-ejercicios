@@ -11,7 +11,6 @@ class ConsoleLogger implements LoggerInterface
 {
     public function log(LogLevel $level, string $message, array $context = []): void
     {
-        $log = "[$level->name] $message ";
         echo "[{$level->value}] $message" . PHP_EOL;
     }
 

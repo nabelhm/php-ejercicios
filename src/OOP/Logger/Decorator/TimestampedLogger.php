@@ -7,10 +7,10 @@ use DateTimeImmutable;
 use Ejercicios\OOP\Logger\LoggerInterface;
 use Ejercicios\OOP\Logger\LogLevel;
 
-class TimestampedLogger implements LoggerInterface
+final readonly class TimestampedLogger implements LoggerInterface
 {
     public function __construct(
-        private LoggerInterface $logger
+        private readonly LoggerInterface $logger
     ) {}
 
     public function log(LogLevel $level, string $message, array $context = []): void

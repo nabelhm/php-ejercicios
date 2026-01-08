@@ -15,9 +15,23 @@ class FileLoggerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->filePath = sys_get_temp_dir() . '/test_logs_' . uniqid();
+    }
 
-        unlink("$this->filePath/$this->fileName");
-        rmdir($this->filePath);
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        // Eliminar archivo si existe
+        $logFile = $this->filePath . '/logs.txt';
+        if (file_exists($logFile)) {
+            unlink($logFile);
+        }
+
+        // Eliminar directorio si existe
+        if (is_dir($this->filePath)) {
+            rmdir($this->filePath);
+        }
     }
 
     public function testConstructor(): void
@@ -28,27 +42,24 @@ class FileLoggerTest extends TestCase
 
     public function testLogCreatesLogFile(): void
     {
-        $message  = 'This is a warning log';
+        $message = 'This is a warning log';
 
-        $logger = new FileLogger($this->filePath);
-        $logger->log(
-            LogLevel::WARNING,
-            $message
-        );
+        $logger = new FileLogger($this->filePath . '/logs.txt'); // ← Path completo
+        $logger->log(LogLevel::WARNING, $message);
 
-        $this->assertFileExists("$this->filePath/$this->fileName");
+        $this->assertFileExists($this->filePath . '/logs.txt');
     }
 
     public function testDebug(): void
     {
         $message  = 'This is a debug log';
 
-        $logger = new FileLogger($this->filePath);
+        $logger = new FileLogger($this->filePath . '/logs.txt');
         $logger->debug(
             $message
         );
 
-        $fileLogs = file_get_contents("$this->filePath/$this->fileName");
+        $fileLogs = file_get_contents("$this->filePath/logs.txt");
         $this->assertStringContainsString("[DEBUG] $message", $fileLogs);
     }
 
@@ -56,7 +67,7 @@ class FileLoggerTest extends TestCase
     {
         $message  = 'This is an info log';
 
-        $logger = new FileLogger($this->filePath);
+        $logger = new FileLogger($this->filePath . '/logs.txt');
         $logger->info(
             $message
         );
@@ -69,7 +80,7 @@ class FileLoggerTest extends TestCase
     {
         $message  = 'This is a warning log';
 
-        $logger = new FileLogger($this->filePath);
+        $logger = new FileLogger($this->filePath . '/logs.txt');
         $logger->warning(
             $message
         );
@@ -82,7 +93,7 @@ class FileLoggerTest extends TestCase
     {
         $message  = 'This is an error log';
 
-        $logger = new FileLogger($this->filePath);
+        $logger = new FileLogger($this->filePath . '/logs.txt');
         $logger->error(
             $message
         );

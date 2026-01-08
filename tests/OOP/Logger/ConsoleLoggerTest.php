@@ -11,7 +11,7 @@ class ConsoleLoggerTest extends TestCase
 
     public function testConstructor(): void
     {
-        $logger = new ConsoleLogger('/logs');
+        $logger = new ConsoleLogger();
         $this->assertInstanceOf(ConsoleLogger::class, $logger);
     }
 
