@@ -12,8 +12,11 @@ use InvalidArgumentException;
 
 class Product
 {
-    public function __construct(private readonly Uuid $id, public string $name, public Money $price)
-    {
+    public function __construct(
+        private readonly Uuid $id,
+        private string $name,
+        private Money $price
+    ) {
         if (empty($name)) {
             throw new InvalidArgumentException("Name can not be empty");
         }
@@ -23,21 +26,26 @@ class Product
         }
     }
 
-    public static function create(string $name, int $priceAmount, ?string $currency = Currency::EUR->value): self
+    public static function create(string $name, int $priceAmount, ?Currency $currency = Currency::EUR): self
     {
-        return new self (
+        return new self(
             Uuid::generate(),
             $name,
-            new Money($priceAmount, Currency::fromString($currency))
+            new Money($priceAmount, $currency)
         );
     }
 
-    public function id(): Uuid   
+    public function id(): Uuid
     {
         return $this->id;
     }
 
-    public function price(): Money      
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+    public function price(): Money
     {
         return $this->price;
     }

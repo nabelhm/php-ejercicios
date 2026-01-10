@@ -74,12 +74,11 @@ class OrderTest extends TestCase
 
     public function testConfirmFromPending(): void
     {
-        $order = Order::create(OrderStatus::PENDING);
+        $order = Order::create();
         $order->confirm();
 
         $this->assertEquals(OrderStatus::CONFIRMED, $order->status());
     }
-
 
     public function testShipFromConfirmed(): void
     {

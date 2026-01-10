@@ -8,15 +8,23 @@ use Ejercicios\MiniProject\Domain\Shared\Uuid;
 
 class Customer
 {
-    public function __construct(private readonly Uuid $id, public string $name) {}
+    public function __construct(
+        private Uuid $id,
+        private string $name
+    ) {}
 
     public static function create(string $name): self
     {
         return new self(Uuid::generate(), $name);
     }
 
-    public function getId(): Uuid       
+    public function id(): Uuid
     {
         return $this->id;
+    }
+    
+    public function name(): string
+    {
+        return $this->name;
     }
 }

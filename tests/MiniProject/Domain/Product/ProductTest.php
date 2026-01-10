@@ -51,15 +51,15 @@ class ProductTest extends TestCase
         $product = Product::create(
             name: 'chair',
             priceAmount: 2000,
-            currency: 'EUR'
+            currency: Currency::EUR
         );
 
         $this->assertInstanceOf(Product::class, $product);
 
         $this->assertInstanceOf(Uuid::class, $product->id());
-        $this->assertEquals('chair', $product->name);
-        $this->assertEquals(2000, $product->price->amount);
-        $this->assertEquals('EUR', $product->price->currency->value);
+        $this->assertEquals('chair', $product->name());
+        $this->assertEquals(2000, $product->price()->amount);
+        $this->assertEquals('EUR', $product->price()->currency->value);
     }
 
     public function testCreateSetEurAsCurrency(): void
@@ -69,6 +69,6 @@ class ProductTest extends TestCase
             priceAmount: 2000,
         );
 
-        $this->assertEquals('EUR', $product->price->currency->value);
+        $this->assertEquals('EUR', $product->price()->currency->value);
     }
 }

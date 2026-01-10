@@ -32,6 +32,6 @@ class CustomerTest extends TestCase
             'Jonh Doe'
         );
 
-        $this->assertEquals('CUST_1234', $customer->getId()->value());
+        $this->assertEquals('CUST_1234', $customer->id()->value());
     }
 }
