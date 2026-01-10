@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Ejercicios\MiniProject\Domain\Product;
+
+use Ejercicios\MiniProject\Domain\Money\Currency;
+use Ejercicios\MiniProject\Domain\Money\Money;
+use Ejercicios\MiniProject\Domain\Shared\Uuid;
+
+use InvalidArgumentException;
+
+class Product
+{
+    public function __construct(private readonly Uuid $id, public string $name, public Money $price)
+    {
+        if (empty($name)) {
+            throw new InvalidArgumentException("Name can not be empty");
+        }
+
+        if (0 == $price->amount) {
+            throw new InvalidArgumentException("Price can not be zero");
+        }
+    }
+
+    public static function create(string $name, int $priceAmount, ?string $currency = Currency::EUR->value): self
+    {
+        return new self (
+            Uuid::generate(),
+            $name,
+            new Money($priceAmount, Currency::fromString($currency))
+        );
+    }
+
+    public function id(): Uuid   
+    {
+        return $this->id;
+    }
+
+    public function price(): Money      
+    {
+        return $this->price;
+    }
+}

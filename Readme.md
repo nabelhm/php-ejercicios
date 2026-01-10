@@ -53,8 +53,8 @@ composer install
 | 7 | [State Machine con Enums](#7-state-machine-con-enums) | Enums, Immutability, Exceptions | Completado |
 | 8 | [Event Dispatcher](#8-event-dispatcher) | Interfaces, Dependency Injection, Observer Pattern | Completado |
 | 9 | [Validation Pipeline](#9-validation-pipeline) | Traits, Fluent Interface, Decorator Pattern | Completado |
-| 10 | [Repository Pattern con Caching](#10-repository-pattern-con-caching) | Abstract Classes, Traits, Attributes, Decorator Pattern | Completado |
-| 11 | [Logger con Decorators](#11-logger-con-decorators) | Interfaces, Enums, Namespaces, Decorator Pattern | En Progreso |
+| 10 | [Repository Pattern con Caching](#10-repository-pattern-con-caching) | Abstract Classes, Traits, Attributes, Decorator Pattern | Pendiente |
+| 11 | [Logger con Decorators](#11-logger-con-decorators) | Interfaces, Enums, Namespaces, Decorator Pattern | Completado |
 
 ---
 
@@ -441,6 +441,127 @@ Implementa un sistema de logging con múltiples handlers y decoradores (inspirad
 - Dependency injection
 - Namespaces organizados
 - Composition over inheritance
+
+---
+
+## Mini-Proyecto Integrador: Order Management System
+
+### Objetivo
+
+Consolidar todos los patrones aprendidos (ejercicios #6-11) en un sistema cohesivo con arquitectura DDD-Lite.
+
+### Scope
+
+**Incluye:**
+- Order Management con arquitectura en capas (Domain, Application, Infrastructure)
+- Aggregates (Order como root, con OrderItem entities)
+- Value Objects (OrderId, CustomerId, ProductId, Money)
+- Domain Events (OrderCreated, OrderConfirmed, OrderShipped)
+- Commands (CreateOrder, ConfirmOrder)
+- Queries (GetOrder, ListOrders)
+- Repository Pattern con InMemory implementations
+- Event Dispatcher para Domain Events
+- Validation Pipeline para Commands
+- Logger decorado para auditoría
+
+**No incluye:**
+- Command/Query Buses (delegación directa)
+- Event Sourcing
+- Múltiples Bounded Contexts
+- Persistencia real (solo InMemory)
+- API REST
+
+### Estructura
+
+```
+src/MiniProject/
+├── Domain/
+│   ├── Order/
+│   │   ├── Order.php (Aggregate root)
+│   │   ├── OrderItem.php (Entity)
+│   │   ├── OrderStatus.php (Enum del ejercicio #7)
+│   │   └── OrderRepositoryInterface.php
+│   ├── Customer/
+│   │   └── CustomerId.php (Value Object)
+│   ├── Product/
+│   │   ├── Product.php (Entity)
+│   │   ├── ProductId.php (Value Object)
+│   │   └── ProductRepositoryInterface.php
+│   ├── Money/
+│   │   ├── Money.php (Del ejercicio #6)
+│   │   └── Currency.php (Del ejercicio #6)
+│   └── Event/
+│       ├── DomainEvent.php (Interface)
+│       ├── OrderCreated.php
+│       ├── OrderConfirmed.php
+│       └── OrderShipped.php
+├── Application/
+│   ├── CreateOrder/
+│   │   ├── CreateOrderCommand.php
+│   │   ├── CreateOrderHandler.php
+│   │   └── CreateOrderValidator.php (Usa ValidationPipeline del #9)
+│   ├── ConfirmOrder/
+│   │   ├── ConfirmOrderCommand.php
+│   │   └── ConfirmOrderHandler.php
+│   ├── GetOrder/
+│   │   ├── GetOrderQuery.php
+│   │   ├── GetOrderHandler.php
+│   │   └── OrderDTO.php
+│   └── ListOrders/
+│       ├── ListOrdersQuery.php
+│       └── ListOrdersHandler.php
+└── Infrastructure/
+    ├── Persistence/
+    │   ├── InMemoryOrderRepository.php (Patrón del #10)
+    │   └── InMemoryProductRepository.php
+    ├── Event/
+    │   └── EventDispatcher.php (Del ejercicio #8)
+    └── Logger/
+        └── (Handlers y Decorators del ejercicio #11)
+```
+
+### Conceptos Practicados
+
+- **Layered Architecture:** Separación Domain/Application/Infrastructure
+- **Dependency Rule:** Domain no depende de nada, Application depende de Domain, Infrastructure implementa interfaces
+- **Aggregates:** Order como raíz con invariantes y consistency boundaries
+- **Value Objects:** Inmutables, con validación en constructor
+- **Domain Events:** Para desacoplamiento entre aggregates
+- **Command/Query Separation:** Comandos modifican, queries leen
+- **Repository Pattern:** Abstracción de persistencia
+- **Decorator Pattern:** Logger con funcionalidad composable
+- **Validation Pipeline:** Validación declarativa de comandos
+
+### Roadmap
+
+**Día 10:** Domain layer
+- Value Objects (OrderId, CustomerId, ProductId)
+- Product entity
+- Order aggregate (create, addItem, confirm, total)
+- OrderItem entity
+- Tests completos
+
+**Día 11:** Application + Infrastructure
+- Domain Events (OrderCreated, OrderConfirmed)
+- Repository interfaces e implementaciones InMemory
+- CreateOrderCommand + Handler
+- Validator con ValidationPipeline
+- Tests con mocks
+
+**Día 12:** Queries + Integration
+- GetOrderQuery + Handler + DTO
+- ListOrdersQuery + Handler
+- ConfirmOrderCommand + Handler
+- Test de integración end-to-end
+- Polish y documentación
+
+### Estado
+
+| Día | Milestone | Estado |
+|-----|-----------|--------|
+| 10 | Domain Layer | Pendiente |
+| 11 | Application + Infrastructure | Pendiente |
+| 12 | Queries + Integration | Pendiente |
 
 ---
 
