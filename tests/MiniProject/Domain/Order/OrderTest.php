@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\MiniProject\Domain\Order;
 
+use Ejercicios\MiniProject\Domain\Customer\Customer;
 use Ejercicios\MiniProject\Domain\Money\Currency;
 use Ejercicios\MiniProject\Domain\Money\Money;
 use Ejercicios\MiniProject\Domain\Order\Exception\InvalidStateTransitionException;
@@ -21,6 +22,7 @@ class OrderTest extends TestCase
     {
         $order = new Order(
             id: Uuid::fromString('ORDER_1'),
+            customer: Customer::create('John Doe'),
             status: OrderStatus::PENDING,
             total: new Money(0, Currency::EUR),
             items: []
@@ -31,7 +33,7 @@ class OrderTest extends TestCase
 
     public function testCreateWithDefaultsEmptyValues(): void
     {
-        $order = Order::create();
+        $order = Order::create(Customer::create('John Doe'));
 
         $this->assertInstanceOf(Uuid::class, $order->id());
         $this->assertEquals(OrderStatus::PENDING, $order->status());
@@ -46,7 +48,7 @@ class OrderTest extends TestCase
             350
         );
 
-        $order = Order::create();
+        $order = Order::create(Customer::create('John Doe'));
         $order->addItem($product, 1);
 
         $this->assertEquals(350, $order->total()->amount);
@@ -59,7 +61,7 @@ class OrderTest extends TestCase
             350
         );
 
-        $order = Order::create();
+        $order = Order::create(Customer::create('John Doe'));
         $order->addItem($product, 2);
 
         $product2 = Product::create(
@@ -74,7 +76,7 @@ class OrderTest extends TestCase
 
     public function testConfirmFromPending(): void
     {
-        $order = Order::create();
+        $order = Order::create(Customer::create('John Doe'));
         $order->confirm();
 
         $this->assertEquals(OrderStatus::CONFIRMED, $order->status());
@@ -84,6 +86,7 @@ class OrderTest extends TestCase
     {
         $order = new Order(
             Uuid::generate(),
+            Customer::create('John Doe'),
             OrderStatus::CONFIRMED,
             new Money(0, Currency::EUR),
             []
@@ -97,6 +100,7 @@ class OrderTest extends TestCase
     {
         $order = new Order(
             Uuid::generate(),
+            Customer::create('John Doe'),
             OrderStatus::SHIPPED,
             new Money(0, Currency::EUR),
             []
@@ -110,6 +114,7 @@ class OrderTest extends TestCase
     {
         $order = new Order(
             Uuid::generate(),
+            Customer::create('John Doe'),
             OrderStatus::PENDING,
             new Money(0, Currency::EUR),
             []
@@ -123,6 +128,7 @@ class OrderTest extends TestCase
     {
         $order = new Order(
             Uuid::generate(),
+            Customer::create('John Doe'),
             OrderStatus::CONFIRMED,
             new Money(0, Currency::EUR),
             []
@@ -137,6 +143,7 @@ class OrderTest extends TestCase
     {
         $order = new Order(
             Uuid::generate(),
+            Customer::create('John Doe'),
             OrderStatus::CONFIRMED,
             new Money(0, Currency::EUR),
             []
@@ -149,6 +156,7 @@ class OrderTest extends TestCase
     {
         $order = new Order(
             Uuid::generate(),
+            Customer::create('John Doe'),
             OrderStatus::SHIPPED,
             new Money(0, Currency::EUR),
             []
@@ -161,6 +169,7 @@ class OrderTest extends TestCase
     {
         $order = new Order(
             Uuid::generate(),
+            Customer::create('John Doe'),
             OrderStatus::DELIVERED,
             new Money(0, Currency::EUR),
             []
@@ -174,6 +183,7 @@ class OrderTest extends TestCase
     {
        $order = new Order(
             Uuid::generate(),
+            Customer::create('John Doe'),
             OrderStatus::PENDING,
             new Money(0, Currency::EUR),
             []
@@ -186,6 +196,7 @@ class OrderTest extends TestCase
     {
        $order = new Order(
             Uuid::generate(),
+            Customer::create('John Doe'),
             OrderStatus::PENDING,
             new Money(0, Currency::EUR),
             []
@@ -198,6 +209,7 @@ class OrderTest extends TestCase
     {
         $order = new Order(
             Uuid::generate(),
+            Customer::create('John Doe'),
             OrderStatus::SHIPPED,
             new Money(0, Currency::EUR),
             []
@@ -210,6 +222,7 @@ class OrderTest extends TestCase
     {
         $order = new Order(
             Uuid::generate(),
+            Customer::create('John Doe'),
             OrderStatus::DELIVERED,
             new Money(0, Currency::EUR),
             []

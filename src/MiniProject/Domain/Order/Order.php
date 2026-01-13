@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ejercicios\MiniProject\Domain\Order;
 
+use Ejercicios\MiniProject\Domain\Customer\Customer;
 use Ejercicios\MiniProject\Domain\Money\Currency;
 use Ejercicios\MiniProject\Domain\Money\Money;
 use Ejercicios\MiniProject\Domain\Order\Exception\InvalidOrderStateException;
@@ -15,15 +16,17 @@ class Order
 {
     public function __construct(
         private readonly Uuid $id,
+        private readonly Customer $customer,
         private OrderStatus $status,
         private Money $total,
         private array $items
     ) {}
 
-    public static function create(): self
+    public static function create(Customer $customer): self
     {
         return new self(
             Uuid::generate(),
+            $customer,
             OrderStatus::PENDING,
             new Money(0, Currency::EUR),
             []
@@ -78,6 +81,11 @@ class Order
     public function items(): array
     {
         return $this->items;
+    }
+
+    public function customer(): Customer
+    {
+        return $this->customer;
     }
 
     private function recalculateTotal(): void       
