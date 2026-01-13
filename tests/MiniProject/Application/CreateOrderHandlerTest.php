@@ -15,6 +15,7 @@ use Ejercicios\MiniProject\Domain\Order\OrderRepositoryInterface;
 use Ejercicios\MiniProject\Domain\Product\Product;
 use Ejercicios\MiniProject\Domain\Product\ProductRepositoryInterface;
 use Ejercicios\MiniProject\Domain\Shared\Uuid;
+use Ejercicios\MiniProject\Infrastructure\Event\EventDispatcherInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -26,6 +27,7 @@ class CreateOrderHandlerTest extends TestCase
     private MockObject $productRepository;
     private MockObject $customerRepository;
     private MockObject $orderRepository;
+    private MockObject $eventDispatcher;
 
     protected function setUp(): void
     {
@@ -45,6 +47,7 @@ class CreateOrderHandlerTest extends TestCase
         $this->productRepository = $this->createMock(ProductRepositoryInterface::class);
         $this->customerRepository = $this->createMock(CustomerRepositoryInterface::class);
         $this->orderRepository = $this->createMock(OrderRepositoryInterface::class);
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
     }
 
     public function testHandleCreatesOrderSuccessfully(): void
@@ -82,7 +85,8 @@ class CreateOrderHandlerTest extends TestCase
         $handler = new CreateOrderHandler(
             $this->orderRepository,
             $this->productRepository,
-            $this->customerRepository
+            $this->customerRepository,
+            $this->eventDispatcher,
         );
 
         // Act
@@ -119,7 +123,8 @@ class CreateOrderHandlerTest extends TestCase
         $handler = new CreateOrderHandler(
             $this->orderRepository,
             $this->productRepository,
-            $this->customerRepository
+            $this->customerRepository,
+            $this->eventDispatcher,
         );
 
         $this->expectException(ProductNotFoundException::class);
@@ -169,7 +174,8 @@ class CreateOrderHandlerTest extends TestCase
         $handler = new CreateOrderHandler(
             $this->orderRepository,
             $this->productRepository,
-            $this->customerRepository
+            $this->customerRepository,
+            $this->eventDispatcher,
         );
 
         $orderId = $handler->handle($command);

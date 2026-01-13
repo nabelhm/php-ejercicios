@@ -8,10 +8,12 @@ use DateTimeImmutable;
 use Ejercicios\MiniProject\Application\CreateOrder\Exception\ProductNotFoundException;
 use Ejercicios\MiniProject\Application\CreateOrder\Exception\CustomerNotFoundException;
 use Ejercicios\MiniProject\Domain\Customer\CustomerRepositoryInterface;
+use Ejercicios\MiniProject\Domain\Event\OrderCreated;
 use Ejercicios\MiniProject\Domain\Order\Order;
 use Ejercicios\MiniProject\Domain\Order\OrderRepositoryInterface;
 use Ejercicios\MiniProject\Domain\Product\ProductRepositoryInterface;
 use Ejercicios\MiniProject\Domain\Shared\Uuid;
+use Ejercicios\MiniProject\Infrastructure\Event\EventDispatcherInterface;
 
 final class CreateOrderHandler
 {
@@ -19,6 +21,7 @@ final class CreateOrderHandler
         private OrderRepositoryInterface $orderRepository,
         private ProductRepositoryInterface $productRepository,
         private CustomerRepositoryInterface $customerRepository,
+        private EventDispatcherInterface $eventDispatcher
     ) {}
 
     public function handle(CreateOrderCommand $command): Uuid
@@ -48,14 +51,20 @@ final class CreateOrderHandler
         $order = Order::create(
             Uuid::fromString($command->customerId)
         );
-        
+
         foreach ($productsData as $item) {
             $order->addItem(...$item);
         }
 
         $this->orderRepository->save($order);
 
-        //TODO: lanzar evento
+        $this->eventDispatcher->dispatch(
+            new OrderCreated(
+                $order->id(),
+                $order->customerId(),
+                new DateTimeImmutable()
+            )
+        );
 
         return $order->id();
     }

@@ -15,12 +15,14 @@ use Ejercicios\MiniProject\Domain\Order\OrderStatus;
 use Ejercicios\MiniProject\Domain\Shared\Uuid;
 use Ejercicios\MiniProject\Domain\Money\Currency;
 use Ejercicios\MiniProject\Domain\Money\Money;
+use Ejercicios\MiniProject\Infrastructure\Event\EventDispatcherInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ConfirmOrderHandlerTest extends TestCase
 {
     private MockObject $orderRepository;
+    private MockObject $eventDispatcher;
     private ConfirmOrderHandler $handler;
 
     protected function setUp(): void
@@ -28,7 +30,8 @@ class ConfirmOrderHandlerTest extends TestCase
         parent::setUp();
 
         $this->orderRepository = $this->createMock(OrderRepositoryInterface::class);
-        $this->handler         = new ConfirmOrderHandler($this->orderRepository);
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->handler         = new ConfirmOrderHandler($this->orderRepository, $this->eventDispatcher);
     }
 
     public function testHandleConfirmsOrderSuccessfully(): void
