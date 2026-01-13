@@ -56,6 +56,7 @@ composer install
 | 10 | [Repository Pattern con Caching](#10-repository-pattern-con-caching) | Abstract Classes, Traits, Attributes, Decorator Pattern | Pendiente |
 | 11 | [Logger con Decorators](#11-logger-con-decorators) | Interfaces, Enums, Namespaces, Decorator Pattern | Completado |
 
+### Mini-proyecto integrador con arquitectura DDD-Lite.
 ---
 
 ## Ejercicios de Fundamentos
