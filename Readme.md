@@ -461,8 +461,6 @@ Consolidar todos los patrones aprendidos (ejercicios #6-11) en un sistema cohesi
 - Queries (GetOrder, ListOrders)
 - Repository Pattern con InMemory implementations
 - Event Dispatcher para Domain Events
-- Validation Pipeline para Commands
-- Logger decorado para auditoría
 
 **No incluye:**
 - Command/Query Buses (delegación directa)
@@ -494,12 +492,10 @@ src/MiniProject/
 │       ├── DomainEvent.php (Interface)
 │       ├── OrderCreated.php
 │       ├── OrderConfirmed.php
-│       └── OrderShipped.php
 ├── Application/
 │   ├── CreateOrder/
 │   │   ├── CreateOrderCommand.php
 │   │   ├── CreateOrderHandler.php
-│   │   └── CreateOrderValidator.php (Usa ValidationPipeline del #9)
 │   ├── ConfirmOrder/
 │   │   ├── ConfirmOrderCommand.php
 │   │   └── ConfirmOrderHandler.php
@@ -516,8 +512,6 @@ src/MiniProject/
     │   └── InMemoryProductRepository.php
     ├── Event/
     │   └── EventDispatcher.php (Del ejercicio #8)
-    └── Logger/
-        └── (Handlers y Decorators del ejercicio #11)
 ```
 
 ### Conceptos Practicados
@@ -529,39 +523,7 @@ src/MiniProject/
 - **Domain Events:** Para desacoplamiento entre aggregates
 - **Command/Query Separation:** Comandos modifican, queries leen
 - **Repository Pattern:** Abstracción de persistencia
-- **Decorator Pattern:** Logger con funcionalidad composable
-- **Validation Pipeline:** Validación declarativa de comandos
 
-### Roadmap
-
-**Día 10:** Domain layer
-- Value Objects (OrderId, CustomerId, ProductId)
-- Product entity
-- Order aggregate (create, addItem, confirm, total)
-- OrderItem entity
-- Tests completos
-
-**Día 11:** Application + Infrastructure
-- Domain Events (OrderCreated, OrderConfirmed)
-- Repository interfaces e implementaciones InMemory
-- CreateOrderCommand + Handler
-- Validator con ValidationPipeline
-- Tests con mocks
-
-**Día 12:** Queries + Integration
-- GetOrderQuery + Handler + DTO
-- ListOrdersQuery + Handler
-- ConfirmOrderCommand + Handler
-- Test de integración end-to-end
-- Polish y documentación
-
-### Estado
-
-| Día | Milestone | Estado |
-|-----|-----------|--------|
-| 10 | Domain Layer | Pendiente |
-| 11 | Application + Infrastructure | Pendiente |
-| 12 | Queries + Integration | Pendiente |
 
 ---
 
