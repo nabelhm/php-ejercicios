@@ -14,6 +14,9 @@ use DateTimeImmutable;
 
 class Order
 {
+    /**
+     * @param OrderItem[] $items
+     */
     public function __construct(
         private readonly Uuid $id,
         private readonly Uuid $customerId,  // ← CORRECTO: Solo ID

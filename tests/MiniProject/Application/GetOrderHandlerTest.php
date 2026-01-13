@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\MiniProject\Application\ConfirmOrder;
+namespace Tests\MiniProject\Application;
 
 use DateTimeImmutable;
-use Ejercicios\MiniProject\Application\ConfirmOrder\ConfirmOrderCommand;
-use Ejercicios\MiniProject\Application\ConfirmOrder\ConfirmOrderHandler;
-use Ejercicios\MiniProject\Application\ConfirmOrder\ConfirmedOrderDto;
-use Ejercicios\MiniProject\Application\ConfirmOrder\Exception\OrderNotFoundException;
+use Ejercicios\MiniProject\Application\GetOrder\GetOrderHandler;
+use Ejercicios\MiniProject\Application\GetOrder\GetOrderQuery;
+use Ejercicios\MiniProject\Application\GetOrder\OrderDto;
+use Ejercicios\MiniProject\Application\Shared\Exception\OrderNotFoundException;
 use Ejercicios\MiniProject\Domain\Order\Order;
 use Ejercicios\MiniProject\Domain\Order\OrderRepositoryInterface;
 use Ejercicios\MiniProject\Domain\Order\OrderStatus;
@@ -18,20 +18,20 @@ use Ejercicios\MiniProject\Domain\Money\Money;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class ConfirmOrderHandlerTest extends TestCase
+class GetOrderHandlerTest extends TestCase
 {
     private MockObject $orderRepository;
-    private ConfirmOrderHandler $handler;
+    private GetOrderHandler $handler;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->orderRepository = $this->createMock(OrderRepositoryInterface::class);
-        $this->handler         = new ConfirmOrderHandler($this->orderRepository);
+        $this->handler         = new GetOrderHandler($this->orderRepository);
     }
 
-    public function testHandleConfirmsOrderSuccessfully(): void
+    public function testHandleGetOrderSuccessfully(): void
     {
         $orderId = 'ORDER_123';
         $order = new Order(
@@ -43,7 +43,7 @@ class ConfirmOrderHandlerTest extends TestCase
             []
         );
 
-        $command = new ConfirmOrderCommand($orderId);
+        $query = new GetOrderQuery($orderId);
 
         $this->orderRepository
             ->expects($this->once())
@@ -54,38 +54,26 @@ class ConfirmOrderHandlerTest extends TestCase
             ))
             ->willReturn($order);
 
-        $this->orderRepository
-            ->expects($this->once())
-            ->method('save')
-            ->with($this->callback(function ($savedOrder) {
-                return $savedOrder instanceof Order
-                    && $savedOrder->status() === OrderStatus::CONFIRMED;
-            }));
+        $result = $this->handler->handle($query);
 
-        $result = $this->handler->handle($command);
-
-        $this->assertInstanceOf(ConfirmedOrderDto::class, $result);
-        $this->assertEquals($orderId, $result->orderId);
-        $this->assertEquals('Confirmed', $result->orderStatus);
+        $this->assertInstanceOf(OrderDto::class, $result);
+        $this->assertEquals($orderId, $result->id);
+        $this->assertEquals('Pending', $result->status);
     }
 
     public function testHandleThrowsExceptionWhenOrderNotFound(): void
     {
         $orderId = 'NONEXISTENT';
-        $command = new ConfirmOrderCommand($orderId);
+        $query = new GetOrderQuery($orderId);
 
         $this->orderRepository
             ->expects($this->once())
             ->method('find')
             ->willReturn(null);
 
-        $this->orderRepository
-            ->expects($this->never())
-            ->method('save');
-
         $this->expectException(OrderNotFoundException::class);
         $this->expectExceptionMessage("There is no order with id $orderId");
 
-        $this->handler->handle($command);
+        $this->handler->handle($query);
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\MiniProject\Application\CreateOrder;
+namespace Tests\MiniProject\Application;
 
 use Ejercicios\MiniProject\Application\CreateOrder\CreateOrderCommand;
 use Ejercicios\MiniProject\Application\CreateOrder\CreateOrderHandler;
@@ -11,7 +11,6 @@ use Ejercicios\MiniProject\Domain\Customer\Customer;
 use Ejercicios\MiniProject\Domain\Customer\CustomerRepositoryInterface;
 use Ejercicios\MiniProject\Domain\Money\Currency;
 use Ejercicios\MiniProject\Domain\Money\Money;
-use Ejercicios\MiniProject\Domain\Order\Order;
 use Ejercicios\MiniProject\Domain\Order\OrderRepositoryInterface;
 use Ejercicios\MiniProject\Domain\Product\Product;
 use Ejercicios\MiniProject\Domain\Product\ProductRepositoryInterface;

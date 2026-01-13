@@ -23,4 +23,14 @@ class OrderItem
     {
         return $this->product->price()->multiply((float) $this->quantity);
     }
+
+    public function product(): Product      
+    {
+        return $this->product;
+    }
+
+    public function quantity(): int
+    {
+        return $this->quantity;
+    }
 }

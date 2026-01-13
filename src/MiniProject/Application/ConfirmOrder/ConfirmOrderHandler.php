@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Ejercicios\MiniProject\Application\ConfirmOrder;
 
-use Ejercicios\MiniProject\Application\ConfirmOrder\Exception\OrderNotFoundException;
+use Ejercicios\MiniProject\Application\Shared\Exception\OrderNotFoundException;
 use Ejercicios\MiniProject\Domain\Order\OrderRepositoryInterface;
 use Ejercicios\MiniProject\Domain\Shared\Uuid;
 
