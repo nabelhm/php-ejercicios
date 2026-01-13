@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Ejercicios\MiniProject\Application\ListOrders;
 
-use Ejercicios\MiniProject\Application\GetOrder\OrderDto;
-use Ejercicios\MiniProject\Application\GetOrder\OrderItemDto;
 use Ejercicios\MiniProject\Domain\Order\OrderRepositoryInterface;
 
 class ListOrdersHandler

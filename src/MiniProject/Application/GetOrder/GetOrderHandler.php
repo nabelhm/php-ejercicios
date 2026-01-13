@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ejercicios\MiniProject\Application\GetOrder;
 
 use Ejercicios\MiniProject\Application\GetOrder\OrderDto;
-use Ejercicios\MiniProject\Application\Shared\Dto\OrderItemDto;
+use Ejercicios\MiniProject\Application\GetOrder\OrderItemDto;
 use Ejercicios\MiniProject\Application\Shared\Exception\OrderNotFoundException;
 use Ejercicios\MiniProject\Domain\Order\OrderRepositoryInterface;
 use Ejercicios\MiniProject\Domain\Shared\Uuid;
@@ -16,21 +16,16 @@ final readonly class GetOrderHandler
 
     public function handle(GetOrderQuery $query): OrderDto
     {
-        # desesctructurar query
         $orderId = $query->orderId;
-        # buscar repositorio
         $order = $this->orderRepository->find(Uuid::fromString($orderId));
-        #  si no existe lanza excepción
         if (null === $order) {
             throw new OrderNotFoundException("There is no order with id $orderId");
         }
 
-        #  si existe devuelve dto
-        #      dto orderItem, agregado
         $itemsArray = [];
         foreach ($order->items() as $item) {
             $itemsArray[] = new OrderItemDto(
-                productId: $item->product()->id(),
+                productId: $item->product()->id()->value(),
                 quantity: $item->quantity(),
                 subtotalAmount: $item->subtotal()->amount,
                 currency: $item->subtotal()->currency->value
