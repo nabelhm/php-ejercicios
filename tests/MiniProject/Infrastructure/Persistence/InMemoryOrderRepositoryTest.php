@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\MiniProject\Infrastructure\Persistence;
 
-use Ejercicios\MiniProject\Domain\Customer\Customer;
+use DateTimeImmutable;
 use Ejercicios\MiniProject\Domain\Money\Currency;
 use Ejercicios\MiniProject\Domain\Money\Money;
 use Ejercicios\MiniProject\Domain\Order\Order;
@@ -17,30 +17,34 @@ class InMemoryOrderRepositoryTest extends TestCase
 {
     public function testSavesAndFindOrder(): void
     {
+        $orderId = 'ORDER_1';
         $order = new Order(
-            id: Uuid::fromString('ORDER_1'),
-            customer: Customer::create('John Doe'),
-            status: OrderStatus::PENDING,
-            total: new Money(0, Currency::EUR),
-            items: []
+            Uuid::fromString($orderId),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
+            OrderStatus::PENDING,
+            new Money(0, Currency::EUR),
+            []
         );
 
         $repository = new InMemoryOrderRepository();
         $repository->save($order);
 
-        $found = $repository->find(Uuid::fromString('ORDER_1'));
+        $found = $repository->find(Uuid::fromString($orderId));
         
         $this->assertEquals($order, $found);
     }
 
     public function testUpdatesOrder(): void
     {
+        $orderId = 'ORDER_1';
         $order = new Order(
-            id: Uuid::fromString('ORDER_1'),
-            customer: Customer::create('John Doe'),
-            status: OrderStatus::PENDING,
-            total: new Money(0, Currency::EUR),
-            items: []
+            Uuid::fromString($orderId),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
+            OrderStatus::PENDING,
+            new Money(0, Currency::EUR),
+            []
         );
 
         $repository = new InMemoryOrderRepository();
@@ -57,12 +61,14 @@ class InMemoryOrderRepositoryTest extends TestCase
 
     public function testReturNullOnNonExistentOrder(): void
     {
+        $orderId = 'ORDER_1';
         $order = new Order(
-            id: Uuid::fromString('ORDER_1'),
-            customer: Customer::create('John Doe'),
-            status: OrderStatus::PENDING,
-            total: new Money(0, Currency::EUR),
-            items: []
+            Uuid::fromString($orderId),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
+            OrderStatus::PENDING,
+            new Money(0, Currency::EUR),
+            []
         );
 
         $repository = new InMemoryOrderRepository();
@@ -75,20 +81,23 @@ class InMemoryOrderRepositoryTest extends TestCase
 
     public function testFindAllWithOrders(): void
     {
+        $orderId = 'ORDER_1';
         $order = new Order(
-            id: Uuid::fromString('ORDER_1'),
-            customer: Customer::create('John Doe'),
-            status: OrderStatus::PENDING,
-            total: new Money(0, Currency::EUR),
-            items: []
+            Uuid::fromString($orderId),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
+            OrderStatus::PENDING,
+            new Money(0, Currency::EUR),
+            []
         );
 
         $order2 = new Order(
-            id: Uuid::fromString('ORDER_2'),
-            customer: Customer::create('Jane Hopper'),
-            status: OrderStatus::PENDING,
-            total: new Money(0, Currency::EUR),
-            items: []
+            Uuid::fromString('ORDER_2'),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
+            OrderStatus::PENDING,
+            new Money(0, Currency::EUR),
+            []
         );
 
         $repository = new InMemoryOrderRepository();

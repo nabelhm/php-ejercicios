@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Ejercicios\MiniProject\Application\CreateOrder;
 
+use DateTimeImmutable;
 use Ejercicios\MiniProject\Application\CreateOrder\Exception\ProductNotFoundException;
 use Ejercicios\MiniProject\Application\CreateOrder\Exception\CustomerNotFoundException;
 use Ejercicios\MiniProject\Domain\Customer\CustomerRepositoryInterface;
@@ -22,15 +24,15 @@ final class CreateOrderHandler
     public function handle(CreateOrderCommand $command): Uuid
     {
         $customerId = $command->customerId;
-        $customer = $this->customerRepository->find(Uuid::fromString($customerId)); 
+        $customer = $this->customerRepository->find(Uuid::fromString($customerId));
         if (null === $customer) {
             throw new CustomerNotFoundException("There is no customer with id $customerId");
         }
-        
+
         $itemsData  = $command->items;
         $productsData = [];
         foreach ($itemsData as $item) {
-            $productId= $item['productId'];
+            $productId = $item['productId'];
             $product = $this->productRepository->find(Uuid::fromString($productId));
 
             if (null === $product) {
@@ -43,7 +45,10 @@ final class CreateOrderHandler
             ];
         }
 
-        $order = Order::create($customer);
+        $order = Order::create(
+            Uuid::fromString($command->customerId)
+        );
+        
         foreach ($productsData as $item) {
             $order->addItem(...$item);
         }
@@ -51,7 +56,7 @@ final class CreateOrderHandler
         $this->orderRepository->save($order);
 
         //TODO: lanzar evento
-        
+
         return $order->id();
     }
 }

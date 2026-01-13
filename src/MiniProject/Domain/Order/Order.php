@@ -4,29 +4,32 @@ declare(strict_types=1);
 
 namespace Ejercicios\MiniProject\Domain\Order;
 
-use Ejercicios\MiniProject\Domain\Customer\Customer;
 use Ejercicios\MiniProject\Domain\Money\Currency;
 use Ejercicios\MiniProject\Domain\Money\Money;
 use Ejercicios\MiniProject\Domain\Order\Exception\InvalidOrderStateException;
 use Ejercicios\MiniProject\Domain\Order\Exception\InvalidStateTransitionException;
 use Ejercicios\MiniProject\Domain\Product\Product;
 use Ejercicios\MiniProject\Domain\Shared\Uuid;
+use DateTimeImmutable;
 
 class Order
 {
     public function __construct(
         private readonly Uuid $id,
-        private readonly Customer $customer,
+        private readonly Uuid $customerId,  // ← CORRECTO: Solo ID
+        private readonly DateTimeImmutable $createdAt,
         private OrderStatus $status,
         private Money $total,
         private array $items
     ) {}
 
-    public static function create(Customer $customer): self
-    {
+    public static function create(
+        Uuid $customerId,  // ← CORRECTO: Solo ID
+    ): self {
         return new self(
             Uuid::generate(),
-            $customer,
+            $customerId,
+            new DateTimeImmutable(),
             OrderStatus::PENDING,
             new Money(0, Currency::EUR),
             []
@@ -36,7 +39,9 @@ class Order
     public function addItem(Product $product, int $quantity): void
     {
         if ($this->status !== OrderStatus::PENDING) {
-            throw new InvalidOrderStateException("Can not add items to an order in status $this->status->value");
+            throw new InvalidOrderStateException(
+                "Can not add items to an order in status {$this->status->value}"
+            );
         }
 
         $this->items[] = new OrderItem($product, $quantity);
@@ -68,6 +73,16 @@ class Order
         return $this->id;
     }
 
+    public function customerId(): Uuid  // ← CORRECTO
+    {
+        return $this->customerId;
+    }
+
+    public function createdAt(): DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
     public function status(): OrderStatus
     {
         return $this->status;
@@ -83,11 +98,6 @@ class Order
         return $this->items;
     }
 
-    public function customer(): Customer
-    {
-        return $this->customer;
-    }
-
     private function recalculateTotal(): void       
     {
         $total = 0;
@@ -95,7 +105,7 @@ class Order
             $total += $item->subtotal()->amount;    
         }
 
-        $this->total= new Money($total, Currency::EUR);
+        $this->total = new Money($total, Currency::EUR);
     }
 
     private function transitionTo(OrderStatus $newStatus): void

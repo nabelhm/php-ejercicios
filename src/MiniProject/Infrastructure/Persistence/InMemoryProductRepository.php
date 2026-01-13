@@ -27,6 +27,6 @@ class InMemoryProductRepository implements ProductRepositoryInterface
 
     public function findAll(): array
     {
-        return $this->products;
+        return array_values($this->products);
     }
 }

@@ -27,6 +27,6 @@ class InMemoryOrderRepository implements OrderRepositoryInterface
 
     public function findAll(): array
     {
-        return $this->orders;
+        return array_values($this->orders);
     }
 }

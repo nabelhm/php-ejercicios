@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\MiniProject\Domain\Order;
 
+use DateTimeImmutable;
 use Ejercicios\MiniProject\Domain\Customer\Customer;
 use Ejercicios\MiniProject\Domain\Money\Currency;
 use Ejercicios\MiniProject\Domain\Money\Money;
@@ -22,7 +23,8 @@ class OrderTest extends TestCase
     {
         $order = new Order(
             id: Uuid::fromString('ORDER_1'),
-            customer: Customer::create('John Doe'),
+            customerId: Uuid::fromString('CUST_123'),
+            createdAt: new DateTimeImmutable(),
             status: OrderStatus::PENDING,
             total: new Money(0, Currency::EUR),
             items: []
@@ -33,7 +35,7 @@ class OrderTest extends TestCase
 
     public function testCreateWithDefaultsEmptyValues(): void
     {
-        $order = Order::create(Customer::create('John Doe'));
+        $order = Order::create(Uuid::fromString('CUST_123'));
 
         $this->assertInstanceOf(Uuid::class, $order->id());
         $this->assertEquals(OrderStatus::PENDING, $order->status());
@@ -48,7 +50,7 @@ class OrderTest extends TestCase
             350
         );
 
-        $order = Order::create(Customer::create('John Doe'));
+        $order = Order::create(Uuid::fromString('CUST_123'));
         $order->addItem($product, 1);
 
         $this->assertEquals(350, $order->total()->amount);
@@ -61,7 +63,7 @@ class OrderTest extends TestCase
             350
         );
 
-        $order = Order::create(Customer::create('John Doe'));
+        $order = Order::create(Uuid::fromString('CUST_123'));
         $order->addItem($product, 2);
 
         $product2 = Product::create(
@@ -76,7 +78,7 @@ class OrderTest extends TestCase
 
     public function testConfirmFromPending(): void
     {
-        $order = Order::create(Customer::create('John Doe'));
+        $order = Order::create(Uuid::fromString('CUST_123'));
         $order->confirm();
 
         $this->assertEquals(OrderStatus::CONFIRMED, $order->status());
@@ -84,12 +86,13 @@ class OrderTest extends TestCase
 
     public function testShipFromConfirmed(): void
     {
-        $order = new Order(
-            Uuid::generate(),
-            Customer::create('John Doe'),
-            OrderStatus::CONFIRMED,
-            new Money(0, Currency::EUR),
-            []
+         $order = new Order(
+            id: Uuid::fromString('ORDER_1'),
+            customerId: Uuid::fromString('CUST_123'),
+            createdAt: new DateTimeImmutable(),
+            status: OrderStatus::CONFIRMED,
+            total: new Money(0, Currency::EUR),
+            items: []
         );
         $order->ship();
 
@@ -99,12 +102,14 @@ class OrderTest extends TestCase
     public function testDeliverFromShipped(): void
     {
         $order = new Order(
-            Uuid::generate(),
-            Customer::create('John Doe'),
+            Uuid::fromString('ORDER_1'),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
             OrderStatus::SHIPPED,
             new Money(0, Currency::EUR),
             []
         );
+        
         $order->deliver();
 
         $this->assertEquals(OrderStatus::DELIVERED, $order->status());
@@ -113,8 +118,9 @@ class OrderTest extends TestCase
     public function testCancelFromPending(): void
     {
         $order = new Order(
-            Uuid::generate(),
-            Customer::create('John Doe'),
+            Uuid::fromString('ORDER_1'),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
             OrderStatus::PENDING,
             new Money(0, Currency::EUR),
             []
@@ -127,8 +133,9 @@ class OrderTest extends TestCase
     public function testCancelFromConfirmed(): void
     {
         $order = new Order(
-            Uuid::generate(),
-            Customer::create('John Doe'),
+            Uuid::fromString('ORDER_1'),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
             OrderStatus::CONFIRMED,
             new Money(0, Currency::EUR),
             []
@@ -142,8 +149,9 @@ class OrderTest extends TestCase
     public function testCannotConfirmFromConfirmed(): void
     {
         $order = new Order(
-            Uuid::generate(),
-            Customer::create('John Doe'),
+            Uuid::fromString('ORDER_1'),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
             OrderStatus::CONFIRMED,
             new Money(0, Currency::EUR),
             []
@@ -155,8 +163,9 @@ class OrderTest extends TestCase
     public function testCannotConfirmFromShipped(): void
     {
         $order = new Order(
-            Uuid::generate(),
-            Customer::create('John Doe'),
+            Uuid::fromString('ORDER_1'),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
             OrderStatus::SHIPPED,
             new Money(0, Currency::EUR),
             []
@@ -168,8 +177,9 @@ class OrderTest extends TestCase
     public function testCannotConfirmFromDelivered(): void
     {
         $order = new Order(
-            Uuid::generate(),
-            Customer::create('John Doe'),
+            Uuid::fromString('ORDER_1'),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
             OrderStatus::DELIVERED,
             new Money(0, Currency::EUR),
             []
@@ -181,9 +191,10 @@ class OrderTest extends TestCase
 
     public function testCannotShipFromPending(): void
     {
-       $order = new Order(
-            Uuid::generate(),
-            Customer::create('John Doe'),
+        $order = new Order(
+            Uuid::fromString('ORDER_1'),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
             OrderStatus::PENDING,
             new Money(0, Currency::EUR),
             []
@@ -194,9 +205,10 @@ class OrderTest extends TestCase
 
     public function testCannotDeliverFromPending(): void
     {
-       $order = new Order(
-            Uuid::generate(),
-            Customer::create('John Doe'),
+        $order = new Order(
+            Uuid::fromString('ORDER_1'),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
             OrderStatus::PENDING,
             new Money(0, Currency::EUR),
             []
@@ -208,8 +220,9 @@ class OrderTest extends TestCase
     public function testCannotCancelFromShipped(): void
     {
         $order = new Order(
-            Uuid::generate(),
-            Customer::create('John Doe'),
+            Uuid::fromString('ORDER_1'),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
             OrderStatus::SHIPPED,
             new Money(0, Currency::EUR),
             []
@@ -221,8 +234,9 @@ class OrderTest extends TestCase
     public function testCannotCancelFromDelivered(): void
     {
         $order = new Order(
-            Uuid::generate(),
-            Customer::create('John Doe'),
+            Uuid::fromString('ORDER_1'),
+            Uuid::fromString('CUST_123'),
+            new DateTimeImmutable(),
             OrderStatus::DELIVERED,
             new Money(0, Currency::EUR),
             []
